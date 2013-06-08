@@ -3,8 +3,11 @@
  */
 package dokutoku.lead.zotonic.lib;
 
+import java.util.ArrayList;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import dokutoku.lead.zotonic.crops.PolyCrop;
 import dokutoku.lead.zotonic.crops.seeds.PolySeeds;
@@ -12,7 +15,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Codename: Lead Zotonic
@@ -87,55 +93,55 @@ public class Configs {
 		public static Item seedIron;
 		public static int   seedIronID;
 		
-		public static ItemSeeds seedGold;
+		public static Item seedGold;
 		public static int   seedGoldID;
 		
-		public static ItemSeeds seedClay;
+		public static Item seedClay;
 		public static int   seedClayID;
 		
 		// Underground stuff
-		public static ItemSeeds seedRedstone;
+		public static Item seedRedstone;
 		public static int   seedRedstoneID;
 		
-		public static ItemSeeds seedCoal;
+		public static Item seedCoal;
 		public static int   seedCoalID;
 		
 		// Nether resources
-		public static ItemSeeds seedNetherrack;
+		public static Item seedNetherrack;
 		public static int   seedNetherrackID;
 		
-		public static ItemSeeds seedGlowstone;
+		public static Item seedGlowstone;
 		public static int   seedGlowstoneID;
 		
-		public static ItemSeeds seedQuartz;
+		public static Item seedQuartz;
 		public static int   seedQuartzID;
 		
-		public static ItemSeeds seedSoulsand;
+		public static Item seedSoulsand;
 		public static int   seedSoulsandID;
 		
 		// Ender resources
-		public static ItemSeeds seedPearl;
+		public static Item seedPearl;
 		public static int   seedPearlID;
 		
-		public static ItemSeeds seedEndstone;
+		public static Item seedEndstone;
 		public static int   seedEndstoneID;
 		
 		// Extra items
-		public static ItemSeeds seedTin;
+		public static Item seedTin;
 		public static int   seedTinID;
 		
-		public static ItemSeeds seedCopper;
+		public static Item seedCopper;
 		public static int   seedCopperID;
 		
-		public static ItemSeeds seedSilver;
+		public static Item seedSilver;
 		public static int   seedSilverID;
 		
-		public static ItemSeeds seedLead;
+		public static Item seedLead;
 		public static int   seedLeadID;
 		
 		// Meh, I'll make it
-		public static ItemSeeds seedLavaCrystal;
-		public static int   seedLavaCrystalID;
+		public static Item seedLavaCrystal;
+		public static int  seedLavaCrystalID;
 		
 		public static void init(FMLPreInitializationEvent event) {
 			config = new Configuration(event.getSuggestedConfigurationFile());
@@ -192,12 +198,93 @@ public class Configs {
 		
 		public static void load(FMLInitializationEvent event) {
 			
-			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID).setUnlocalizedName("seeds.iron");
-			cropIron = new PolyCrop(cropIronID, Item.goldNugget, (ItemSeeds) seedIron, 3);
+			// ITEM REGISTRY
+			
+			ItemStack tin    = null;
+			ItemStack copper = null;
+			ItemStack silver = null;
+			ItemStack lead   = null;
+			
+			ArrayList<ItemStack> tins    = OreDictionary.getOres("ingotTin");
+			ArrayList<ItemStack> coppers = OreDictionary.getOres("ingotCopper");
+			ArrayList<ItemStack> silvers = OreDictionary.getOres("ingotSilver");
+			ArrayList<ItemStack> leads   = OreDictionary.getOres("ingotLead");
+			
+			System.out.println("Do we have any tins? " + !tins.isEmpty());
+			
+			if(!tins.isEmpty())
+				tin = tins.get(0);
+			if(!coppers.isEmpty())
+				copper = coppers.get(0);
+			if(!silvers.isEmpty())
+				silver = silvers.get(0);
+			if(!leads.isEmpty())
+				lead = leads.get(0);
+			
+			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron)).setType("Iron").setUnlocalizedName("seeds.iron");
+			cropIron = new PolyCrop(cropIronID, (ItemSeeds) seedIron, 3).setFXType(FXType.IRON);
+			
+			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold)).setType("Gold").setUnlocalizedName("seeds.gold");
+			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 3).setFXType(FXType.GOLD);
+			
+			if(!tins.isEmpty()) {
+			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin).setType("Tin").setUnlocalizedName("seeds.tin");
+			cropTin = new PolyCrop(cropTinID, (ItemSeeds) seedTin, 3).setFXType(FXType.TIN);
+			}
+			
+			if(!coppers.isEmpty()) {
+			seedCopper = new PolySeeds(seedCopperID, cropCopperID, Block.tilledField.blockID, copper).setType("Copper").setUnlocalizedName("seeds.copper");
+			cropCopper = new PolyCrop(cropCopperID, (ItemSeeds) seedCopper, 3).setFXType(FXType.COPPER);
+			}
+			
+			if(!silvers.isEmpty()) {
+			seedSilver = new PolySeeds(seedSilverID, cropSilverID, Block.tilledField.blockID, silver).setType("Silver").setUnlocalizedName("seeds.silver");
+			cropSilver = new PolyCrop(cropSilverID, (ItemSeeds) seedSilver, 3).setFXType(FXType.SILVER);
+			}
+			
+			if(!leads.isEmpty()) {
+			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead).setType("Lead").setUnlocalizedName("seeds.lead");
+			cropLead = new PolyCrop(cropLeadID, (ItemSeeds) seedLead, 3).setFXType(FXType.LEAD);
+			}
+			
+			// LANGUAGE REGISTRY
 			
 			LanguageRegistry.addName(seedIron, "Iron Seeds");
 			LanguageRegistry.addName(cropIron, "Iron crop");
 			
+			LanguageRegistry.addName(seedGold, "Gold Seeds");
+			LanguageRegistry.addName(cropGold, "Gold crop");
+			
+			if(!tins.isEmpty()) {
+			LanguageRegistry.addName(seedTin, "Tin Seeds");
+			LanguageRegistry.addName(cropTin, "Tin crop");
+			}
+			
+			if(!coppers.isEmpty()) {
+			LanguageRegistry.addName(seedCopper, "Copper Seeds");
+			LanguageRegistry.addName(cropCopper, "Copper crop");
+			}
+			
+			if(!silvers.isEmpty()) {
+			LanguageRegistry.addName(seedSilver, "Silver Seeds");
+			LanguageRegistry.addName(cropSilver, "Silver crop");
+			}
+			
+			if(!leads.isEmpty()) {
+			LanguageRegistry.addName(seedLead, "Lead Seeds");
+			LanguageRegistry.addName(cropLead, "Lead crop");
+			}
+			
+			// SMELTING RECIPES
+			
+			System.out.println("Looks to me that the seed ID for Iron is " + seedIronID);
+			GameRegistry.addSmelting(seedIron.itemID, ((PolySeeds) seedIron).getProduct(), 0.0f);
+			GameRegistry.addSmelting(seedGold.itemID, ((PolySeeds) seedGold).getProduct(), 0.0f);
+			
+			if(!tins.isEmpty())    GameRegistry.addSmelting(seedTin.itemID, ((PolySeeds) seedTin).getProduct(), 0.0f);
+			if(!coppers.isEmpty()) GameRegistry.addSmelting(seedCopper.itemID, ((PolySeeds) seedCopper).getProduct(), 0.0f);
+			if(!silvers.isEmpty()) GameRegistry.addSmelting(seedSilver.itemID, ((PolySeeds) seedSilver).getProduct(), 0.0f);
+			if(!leads.isEmpty())   GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
 		}
 
 }

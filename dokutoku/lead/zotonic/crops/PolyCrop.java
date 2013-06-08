@@ -6,13 +6,23 @@ package dokutoku.lead.zotonic.crops;
 import java.util.ArrayList;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dokutoku.lead.zotonic.client.CropParticleFX;
+import dokutoku.lead.zotonic.lib.FXType;
+import dokutoku.lead.zotonic.lib.Reference;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
+import net.minecraft.src.ModLoader;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import net.minecraft.client.particle.EntityPortalFX;
+import net.minecraft.client.renderer.texture.IconRegister;
 
 /**
  * Codename: Lead Zotonic
@@ -24,20 +34,22 @@ import net.minecraft.world.World;
  */
 public class PolyCrop extends BlockCrops {
 	
-	protected Item drop;
 	protected ItemSeeds seed;
 	protected int rarity = 3;
+	protected FXType fxtype = FXType.IRON;
+	private   Icon iconArray[];
 
 	/**
 	 * @param par1
 	 */
-	public PolyCrop(int par1, Item drop, ItemSeeds seed, int rarity) {
+	public PolyCrop(int par1, ItemSeeds seed, int rarity) {
 		
 		super(par1);
 		
-		this.drop = drop;
 		this.seed = seed;
 		this.rarity = rarity;
+		
+		this.setLightValue(0.4f);
 	
 	}
 	
@@ -56,7 +68,7 @@ public class PolyCrop extends BlockCrops {
 	@Override
     protected int getCropItem()
     {
-        return drop.itemID;
+        return seed.itemID;
     }
 	
 	/**
@@ -76,7 +88,7 @@ public class PolyCrop extends BlockCrops {
 		
         if (!par1World.isRemote) // Are we the server?
         {
-        	ItemStack[] items = new ItemStack[]{new ItemStack(drop, 1), new ItemStack(seed, 1)};
+        	ItemStack[] items = new ItemStack[]{ new ItemStack(seed, 1)};
         	
         	// Are we mature enough?
         	if(par5 >= 7) {
@@ -107,7 +119,6 @@ public class PolyCrop extends BlockCrops {
     {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 		ret.add(new ItemStack(seed, 1));
-		ret.add(new ItemStack(drop, 1));
 		return ret;
     }
 	
@@ -153,5 +164,109 @@ public class PolyCrop extends BlockCrops {
 		default: return 1;
 		}
 	}
+	
+	public Block setFXType(FXType fxt) {
+		this.fxtype = fxt;
+		return this;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void randomDisplayTick(World par1World, int par2, int par3,
+			int par4, Random par5Random) {
+		super.randomDisplayTick(par1World, par2, par3, par4, par5Random);
+		/* if (par5Random.nextInt(1) == 0) {
+			par1World.spawnParticle("suspend",
+					par2 + par5Random.nextFloat(), par3, par4
+							+ par5Random.nextFloat(), 2.55D, 1.7D, 0D);
+							
+			} */
+		
+		float rand    = par5Random.nextFloat();
+		float randu   = par5Random.nextInt(2); // 0 or 1
+		
+		switch(fxtype)
+		{
+		case IRON:   if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 2.55F, 2.55F, 2.55F);
+		 		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.68F, 0.68F, 0.68F); break;
+		 		   
+		case GOLD:   if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 2.24F, 2.24F, 0.02F);
+		   		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 2.25F, 0.71F, 0.27F); break;
+		   		   
+		case TIN:    if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 0.36F, 0.54F, 0.68F);
+		 		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.82F, 1.14F, 1.42F); break;
+		
+		case COPPER: if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 1.72F, 0.83F, 0.01F);
+					 else           metalFXEffect(par1World, par2, par3, par4, par5Random, 1.56F, 0.63F, 0.01F); break;
+					 
+		case SILVER: if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 2.00F, 2.20F, 2.27F);
+		 			 else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.72F, 1.40F, 1.46F); break;
+		 			 
+		case LEAD:   if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 0.73F, 0.84F, 1.16F);
+		 		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.45F, 0.52F, 0.73F); break;
+		default:
+			break;
+		}
+		
+	}
+	
+	@SideOnly(Side.CLIENT)
+
+    /**
+     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+     * is the only chance you get to register icons.
+     */
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.iconArray = new Icon[4];
+
+        for (int i = 0; i < this.iconArray.length - 1; ++i)
+        {
+            this.iconArray[i] = par1IconRegister.registerIcon("carrots_" + i);
+        }
+        
+        this.iconArray[this.iconArray.length - 1] = par1IconRegister.registerIcon(Reference.MOD_ID+":" + fxtype.toString() + "_crop");
+    }
+	
+	@SideOnly(Side.CLIENT)
+
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public Icon getIcon(int par1, int par2)
+    {
+        if (par2 < 7)
+        {
+            if (par2 == 6)
+            {
+                par2 = 5;
+            }
+
+            return this.iconArray[par2 >> 1];
+        }
+        else
+        {
+            return this.iconArray[3];
+        }
+    }
+	
+	/** FX Effect Handlers **/
+	
+	private void metalFXEffect(World par1World, int par2, int par3,
+			int par4, Random par5Random, float r, float g, float b) {
+		
+		if(par5Random.nextInt() <= 5) {
+			CropParticleFX fx = new CropParticleFX(par1World,
+			/* Motion to */ par2 + .5f, par3, par4 + .5f,
+			/* Spawn at  */ par5Random.nextDouble() - .5f, .9D, par5Random.nextDouble() - .5f,
+			/* Color     */ r, g, b);
+			
+			ModLoader.getMinecraftInstance().effectRenderer.addEffect(fx);
+		}
+	}
+	
+	private void coalFXEffect() {}
+	
+	private void redstoneFXEffect() {}
 
 }
