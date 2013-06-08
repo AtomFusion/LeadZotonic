@@ -5,6 +5,8 @@ package dokutoku.lead.zotonic.lib;
 
 import java.util.ArrayList;
 
+import thermalexpansion.api.item.ItemRegistry;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -18,6 +20,7 @@ import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -194,6 +197,8 @@ public class Configs {
 			
 			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
 			
+			config.save();
+			
 		}
 		
 		public static void load(FMLInitializationEvent event) {
@@ -205,47 +210,132 @@ public class Configs {
 			ItemStack silver = null;
 			ItemStack lead   = null;
 			
-			ArrayList<ItemStack> tins    = OreDictionary.getOres("ingotTin");
-			ArrayList<ItemStack> coppers = OreDictionary.getOres("ingotCopper");
-			ArrayList<ItemStack> silvers = OreDictionary.getOres("ingotSilver");
-			ArrayList<ItemStack> leads   = OreDictionary.getOres("ingotLead");
+			ArrayList<ItemStack> tins    = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> coppers = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> silvers = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> leads   = new ArrayList<ItemStack>();  
 			
-			System.out.println("Do we have any tins? " + !tins.isEmpty());
+			// Try to get TE's ingots first. Personal preference.
+			if(ItemRegistry.getItem("ingotElectrum", 1) != null)
+			{
+				
+				tin    = ItemRegistry.getItem("ingotTin", 1);
+				copper = ItemRegistry.getItem("ingotCopper", 1);
+				silver = ItemRegistry.getItem("ingotSilver", 1);
+				lead   = ItemRegistry.getItem("ingotLead", 1);
+				
+				// Satisfy checks
+				tins.add(tin);
+				coppers.add(copper);
+				silvers.add(silver);
+				leads.add(lead);
+				
+				
+			} else {
 			
-			if(!tins.isEmpty())
-				tin = tins.get(0);
-			if(!coppers.isEmpty())
-				copper = coppers.get(0);
-			if(!silvers.isEmpty())
-				silver = silvers.get(0);
-			if(!leads.isEmpty())
-				lead = leads.get(0);
+				tins    = OreDictionary.getOres("ingotTin");
+				coppers = OreDictionary.getOres("ingotCopper");
+				silvers = OreDictionary.getOres("ingotSilver");
+				leads   = OreDictionary.getOres("ingotLead");
+				
+				if(!tins.isEmpty())
+					tin = tins.get(0);
+				if(!coppers.isEmpty())
+					copper = coppers.get(0);
+				if(!silvers.isEmpty())
+					silver = silvers.get(0);
+				if(!leads.isEmpty())
+					lead = leads.get(0);
 			
-			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron)).setType("Iron").setUnlocalizedName("seeds.iron");
+			}
+			
+			/// METALS
+			
+			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron), EnumPlantType.Crop)
+					.setType("Iron").setUnlocalizedName("seeds.iron");
 			cropIron = new PolyCrop(cropIronID, (ItemSeeds) seedIron, 3).setFXType(FXType.IRON);
 			
-			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold)).setType("Gold").setUnlocalizedName("seeds.gold");
-			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 3).setFXType(FXType.GOLD);
+			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold), EnumPlantType.Crop)
+					.setType("Gold").setUnlocalizedName("seeds.gold");
+			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 4).setFXType(FXType.GOLD);
 			
 			if(!tins.isEmpty()) {
-			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin).setType("Tin").setUnlocalizedName("seeds.tin");
-			cropTin = new PolyCrop(cropTinID, (ItemSeeds) seedTin, 3).setFXType(FXType.TIN);
+			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin, EnumPlantType.Crop)
+					.setType("Tin").setUnlocalizedName("seeds.tin");
+			cropTin = new PolyCrop(cropTinID, (ItemSeeds) seedTin, 2).setFXType(FXType.TIN);
 			}
 			
 			if(!coppers.isEmpty()) {
-			seedCopper = new PolySeeds(seedCopperID, cropCopperID, Block.tilledField.blockID, copper).setType("Copper").setUnlocalizedName("seeds.copper");
-			cropCopper = new PolyCrop(cropCopperID, (ItemSeeds) seedCopper, 3).setFXType(FXType.COPPER);
+			seedCopper = new PolySeeds(seedCopperID, cropCopperID, Block.tilledField.blockID, copper, EnumPlantType.Crop)
+					.setType("Copper").setUnlocalizedName("seeds.copper");
+			cropCopper = new PolyCrop(cropCopperID, (ItemSeeds) seedCopper, 1).setFXType(FXType.COPPER);
 			}
 			
 			if(!silvers.isEmpty()) {
-			seedSilver = new PolySeeds(seedSilverID, cropSilverID, Block.tilledField.blockID, silver).setType("Silver").setUnlocalizedName("seeds.silver");
-			cropSilver = new PolyCrop(cropSilverID, (ItemSeeds) seedSilver, 3).setFXType(FXType.SILVER);
+			seedSilver = new PolySeeds(seedSilverID, cropSilverID, Block.tilledField.blockID, silver, EnumPlantType.Crop)
+					.setType("Silver").setUnlocalizedName("seeds.silver");
+			cropSilver = new PolyCrop(cropSilverID, (ItemSeeds) seedSilver, 4).setFXType(FXType.SILVER);
 			}
 			
 			if(!leads.isEmpty()) {
-			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead).setType("Lead").setUnlocalizedName("seeds.lead");
+			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead, EnumPlantType.Crop)
+					.setType("Lead").setUnlocalizedName("seeds.lead");
 			cropLead = new PolyCrop(cropLeadID, (ItemSeeds) seedLead, 3).setFXType(FXType.LEAD);
 			}
+			
+			
+			/// RESOURCES
+			
+			seedClay = new PolySeeds(seedClayID, cropClayID, 
+					Block.tilledField.blockID, new ItemStack(Item.clay), EnumPlantType.Crop)
+					.setType("Clay").setUnlocalizedName("seeds.clay");
+			cropClay = new PolyCrop(cropClayID, (ItemSeeds) seedClay, 2).setFXType(FXType.CLAY);
+			
+			seedRedstone = new PolySeeds(seedRedstoneID, cropRedstoneID,
+					Block.tilledField.blockID, new ItemStack(Item.redstone, 2), EnumPlantType.Crop)
+				    .setType("Redstone").setUnlocalizedName("seeds.redstone");
+			cropRedstone = new PolyCrop(cropRedstoneID, (ItemSeeds) seedRedstone, 2).setFXType(FXType.REDSTONE);
+	
+			seedCoal = new PolySeeds(seedCoalID, cropCoalID,
+					Block.tilledField.blockID, new ItemStack(Item.coal), EnumPlantType.Crop)
+					.setType("Coal").setUnlocalizedName("seeds.coal");
+			cropCoal = new PolyCrop(cropCoalID, (ItemSeeds) seedCoal, 2).setFXType(FXType.COAL);
+	
+			seedNetherrack = new PolySeeds(seedNetherrackID, cropNetherrackID,
+					Block.slowSand.blockID, new ItemStack(Block.netherrack), EnumPlantType.Nether)
+					.setType("Hell").setUnlocalizedName("seeds.netherrack");
+			cropNetherrack = new PolyCrop(cropNetherrackID, (ItemSeeds) seedNetherrack, 3).setFXType(FXType.HELL);
+	
+			seedGlowstone = new PolySeeds(seedGlowstoneID, cropGlowstoneID,
+					Block.slowSand.blockID, new ItemStack(Item.lightStoneDust, 3), EnumPlantType.Nether)
+					.setType("Glow").setUnlocalizedName("seeds.glowstone");
+			cropGlowstone = new PolyCrop(cropGlowstoneID, (ItemSeeds) seedGlowstone, 4).setFXType(FXType.GLOW);
+	
+			seedQuartz = new PolySeeds(seedQuartzID, cropQuartzID,
+					Block.slowSand.blockID, new ItemStack(Item.netherQuartz), EnumPlantType.Nether)
+					.setType("Quartz").setUnlocalizedName("seeds.quartz");
+			cropQuartz = new PolyCrop(cropQuartzID, (ItemSeeds) seedQuartz, 3).setFXType(FXType.QUARTZ);
+	
+			seedSoulsand = new PolySeeds(seedSoulsandID, cropSoulsandID,
+					Block.slowSand.blockID, new ItemStack(Block.slowSand), EnumPlantType.Nether)
+					.setType("Soul").setUnlocalizedName("seeds.soulsand");
+			cropSoulsand = new PolyCrop(cropSoulsandID, (ItemSeeds) seedSoulsand, 4).setFXType(FXType.SOUL);
+	
+			seedPearl = new PolySeeds(seedPearlID, cropPearlID,
+					Block.tilledField.blockID, new ItemStack(Item.enderPearl), EnumPlantType.Crop)
+					.setType("Pearl").setUnlocalizedName("seeds.enderpearl");
+			cropPearl = new PolyCrop(cropPearlID, (ItemSeeds) seedPearl, 5).setFXType(FXType.PEARL);
+
+			seedEndstone = new PolySeeds(seedEndstoneID, cropEndstoneID,
+					Block.tilledField.blockID, new ItemStack(Block.whiteStone), EnumPlantType.Crop)
+					.setType("End").setUnlocalizedName("seeds.endstone");
+			cropEndstone = new PolyCrop(cropEndstoneID, (ItemSeeds) seedEndstone, 5).setFXType(FXType.END);
+	
+			seedLavaCrystal = new PolySeeds(seedLavaCrystalID, cropLavaCrystalID,
+					Block.tilledField.blockID, new ItemStack(Item.bucketLava), EnumPlantType.Nether)
+					.setType("Lava").setUnlocalizedName("seeds.lavacrystal");
+			cropLavaCrystal = new PolyCrop(cropLavaCrystalID, (ItemSeeds) seedLavaCrystal, 4).setFXType(FXType.LAVA);
+
 			
 			// LANGUAGE REGISTRY
 			
@@ -275,9 +365,40 @@ public class Configs {
 			LanguageRegistry.addName(cropLead, "Lead crop");
 			}
 			
+
+			LanguageRegistry.addName(seedClay, "Clay Seeds");
+			LanguageRegistry.addName(cropClay, "Clay crop");
+			
+			LanguageRegistry.addName(seedEndstone, "End Stone Seeds");
+			LanguageRegistry.addName(cropEndstone, "End Stone crop");
+			
+			LanguageRegistry.addName(seedGlowstone, "Glowstone Seeds");
+			LanguageRegistry.addName(cropGlowstone, "Glowstone crop");
+			
+			LanguageRegistry.addName(seedNetherrack, "Netherrack Seeds");
+			LanguageRegistry.addName(cropNetherrack, "Netherrack crop");
+			
+			LanguageRegistry.addName(seedLavaCrystal, "Lava Crystal Seeds");
+			LanguageRegistry.addName(cropLavaCrystal, "Lava Crystal crop");
+			
+			LanguageRegistry.addName(seedPearl, "Ender Pearl Seeds");
+			LanguageRegistry.addName(cropPearl, "Ender Pearl crop");
+			
+			LanguageRegistry.addName(seedQuartz, "Quartz Seeds");
+			LanguageRegistry.addName(cropQuartz, "Quartz crop");
+			
+			LanguageRegistry.addName(seedRedstone, "Redstone Seeds");
+			LanguageRegistry.addName(cropRedstone, "Redstone crop");
+			
+			LanguageRegistry.addName(seedSoulsand, "Soul Seeds");
+			LanguageRegistry.addName(cropSoulsand, "Soul crop");
+			
+			LanguageRegistry.addName(seedCoal, "Coal Seeds");
+			LanguageRegistry.addName(cropCoal, "Coal crop");
+			
+			
 			// SMELTING RECIPES
 			
-			System.out.println("Looks to me that the seed ID for Iron is " + seedIronID);
 			GameRegistry.addSmelting(seedIron.itemID, ((PolySeeds) seedIron).getProduct(), 0.0f);
 			GameRegistry.addSmelting(seedGold.itemID, ((PolySeeds) seedGold).getProduct(), 0.0f);
 			
@@ -285,6 +406,21 @@ public class Configs {
 			if(!coppers.isEmpty()) GameRegistry.addSmelting(seedCopper.itemID, ((PolySeeds) seedCopper).getProduct(), 0.0f);
 			if(!silvers.isEmpty()) GameRegistry.addSmelting(seedSilver.itemID, ((PolySeeds) seedSilver).getProduct(), 0.0f);
 			if(!leads.isEmpty())   GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
+			
+			
+			// CRAFTING RECIPES
+			
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedClay).getProduct(), new ItemStack(seedClay));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedCoal).getProduct(), new ItemStack(seedCoal));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedRedstone).getProduct(), new ItemStack(seedRedstone));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedNetherrack).getProduct(), new ItemStack(seedNetherrack));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedGlowstone).getProduct(), new ItemStack(seedGlowstone));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedQuartz).getProduct(), new ItemStack(seedQuartz));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedSoulsand).getProduct(), new ItemStack(seedSoulsand));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedPearl).getProduct(), new ItemStack(seedPearl));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
+			
 		}
 
 }

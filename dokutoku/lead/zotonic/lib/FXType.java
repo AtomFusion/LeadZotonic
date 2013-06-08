@@ -18,9 +18,13 @@ public enum FXType {
 	COAL,
 	CLAY,
 	REDSTONE,
-	NETHER,
-	ENDERPEARL,
+	HELL,
+	GLOW,
+	PEARL,
 	QUARTZ,
+	SOUL,
+	END,
+	LAVA,
 	TIN, /* Done */
 	COPPER, /* Done */
 	SILVER, /* Done */

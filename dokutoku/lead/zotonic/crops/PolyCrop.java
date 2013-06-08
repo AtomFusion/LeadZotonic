@@ -11,6 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dokutoku.lead.zotonic.client.CropParticleFX;
 import dokutoku.lead.zotonic.lib.FXType;
 import dokutoku.lead.zotonic.lib.Reference;
+import dokutoku.lead.zotonic.crops.seeds.PolySeeds;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
@@ -20,9 +21,12 @@ import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.ModLoader;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.client.particle.EntityPortalFX;
+import net.minecraft.client.particle.EntityRainFX;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraftforge.common.EnumPlantType;
 
 /**
  * Codename: Lead Zotonic
@@ -35,10 +39,12 @@ import net.minecraft.client.renderer.texture.IconRegister;
 public class PolyCrop extends BlockCrops {
 	
 	protected ItemSeeds seed;
-	protected int rarity = 3;
-	protected FXType fxtype = FXType.IRON;
-	private   Icon iconArray[];
-
+	protected int       rarity = 3;
+	protected FXType    fxtype = FXType.IRON;
+	private   Icon      iconArray[];
+	private   boolean   fullyGrown = false;
+	
+	
 	/**
 	 * @param par1
 	 */
@@ -52,6 +58,22 @@ public class PolyCrop extends BlockCrops {
 		this.setLightValue(0.4f);
 	
 	}
+	
+	public FXType getFXType()
+	{
+		return fxtype;
+	}
+	
+	@Override
+	protected boolean canThisPlantGrowOnThisBlockID(int par1)
+    {
+		if(((PolySeeds)seed).getPolyType() == EnumPlantType.Nether)
+			return par1 == Block.slowSand.blockID;
+		else if(((PolySeeds)seed).getPolyType() == EnumPlantType.Crop)
+			return par1 == Block.tilledField.blockID;
+		else
+			return par1 == Block.obsidian.blockID;
+    }
 	
 	/**
      * Generate a seed ItemStack for this crop.
@@ -175,13 +197,7 @@ public class PolyCrop extends BlockCrops {
 	public void randomDisplayTick(World par1World, int par2, int par3,
 			int par4, Random par5Random) {
 		super.randomDisplayTick(par1World, par2, par3, par4, par5Random);
-		/* if (par5Random.nextInt(1) == 0) {
-			par1World.spawnParticle("suspend",
-					par2 + par5Random.nextFloat(), par3, par4
-							+ par5Random.nextFloat(), 2.55D, 1.7D, 0D);
-							
-			} */
-		
+				
 		float rand    = par5Random.nextFloat();
 		float randu   = par5Random.nextInt(2); // 0 or 1
 		
@@ -204,8 +220,36 @@ public class PolyCrop extends BlockCrops {
 		 			 
 		case LEAD:   if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 0.73F, 0.84F, 1.16F);
 		 		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.45F, 0.52F, 0.73F); break;
-		default:
-			break;
+		 		     
+		case CLAY:   rainFXEffect(par1World, par2 + par5Random.nextFloat(), par3 + 0.9f, par4 + par5Random.nextFloat(), par5Random); break;
+		
+		case COAL:	 if(rand <= 0.3f) par1World.spawnParticle("smoke", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+											                0.0f, 0.03f, 0.0f); break;
+		
+		case HELL:	 if(rand <= 0.3f) par1World.spawnParticle("flame", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+                	 0.0f, 0.03f, 0.0f);
+					 par1World.spawnParticle("portal", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+					 0.0f, 0.00f, 0.0f);
+					 break;
+					 
+		case REDSTONE: if(rand <= 0.3f) par1World.spawnParticle("reddust", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+           	 		   0.0f, 0.00f, 0.0f); break;
+		
+		case SOUL:
+		case QUARTZ:
+		case GLOW: par1World.spawnParticle("portal", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+    	 		   0.0f, 0.00f, 0.0f); break;
+    	 		   
+		case LAVA: if(rand <= 0.3f) par1World.spawnParticle("flame", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
+           	 	   0.0f, 0.03f, 0.0f);
+				   if(rand <= 0.05f) par1World.spawnParticle("lava", par2, par3, par4, 0.0f, 0.0f, 0.0f);
+				   break;
+				   
+		case END:
+		case PEARL: par1World.spawnParticle("townaura", par2 + par5Random.nextFloat(), par3 + 0.5f, par4 + par5Random.nextFloat(),
+ 	 		   		0.0f, 0.00f, 0.0f); break;
+		
+		default:   break;
 		}
 		
 	}
@@ -252,8 +296,8 @@ public class PolyCrop extends BlockCrops {
 	
 	/** FX Effect Handlers **/
 	
-	private void metalFXEffect(World par1World, int par2, int par3,
-			int par4, Random par5Random, float r, float g, float b) {
+	private void metalFXEffect(World par1World, float par2, float par3,
+			float par4, Random par5Random, float r, float g, float b) {
 		
 		if(par5Random.nextInt() <= 5) {
 			CropParticleFX fx = new CropParticleFX(par1World,
@@ -265,8 +309,17 @@ public class PolyCrop extends BlockCrops {
 		}
 	}
 	
-	private void coalFXEffect() {}
-	
-	private void redstoneFXEffect() {}
+	private void rainFXEffect(World par1World, float f, float g, float h, Random par5Random)
+	{
+		
+		if(par5Random.nextInt() <= 5) {
+			
+			EntityRainFX fx = new EntityRainFX(par1World, f, g, h);
+			
+			ModLoader.getMinecraftInstance().effectRenderer.addEffect(fx);
+			
+		}
+		
+	}
 
 }
