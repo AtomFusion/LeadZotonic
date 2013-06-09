@@ -197,6 +197,7 @@ public class Configs {
 			cropCopperID = config.getBlock("block", "Copper Crop ID", 2812).getInt(cropCopperID);
 			cropSilverID = config.getBlock("block", "Silver Crop ID", 2813).getInt(cropSilverID);
 			cropLeadID = config.getBlock("block", "Lead Crop ID", 2814).getInt(cropLeadID);
+			cropNickelID = config.getBlock("block", "Nickel Crop ID", 2816).getInt(cropNickelID);
 			
 			cropLavaCrystalID = config.getBlock("block", "Lava Crystal Crop ID", 2815).getInt(cropLavaCrystalID);
 			
@@ -222,7 +223,7 @@ public class Configs {
 			seedSilverID = config.getItem("item", "Silver Seed ID", 5313).getInt(seedSilverID);
 			seedLeadID = config.getItem("item", "Lead Seed ID", 5314).getInt(seedLeadID);
 			
-			seedNickelID = config.getItem("item", "Silver Seed ID", 5318).getInt(seedSilverID);
+			seedNickelID = config.getItem("item", "Nickel Seed ID", 5318).getInt(seedNickelID);
 			
 			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
 			
@@ -253,6 +254,8 @@ public class Configs {
 			ArrayList<ItemStack> silvers = new ArrayList<ItemStack>();
 			ArrayList<ItemStack> leads   = new ArrayList<ItemStack>();  
 			ArrayList<ItemStack> nickels = new ArrayList<ItemStack>();
+			
+			
 			
 			// Try to get TE's ingots first. Personal preference.
 			if(ItemRegistry.getItem("ingotElectrum", 1) != null)
@@ -328,9 +331,9 @@ public class Configs {
 			}
 			
 			if(!nickels.isEmpty()) {
-			seedLead = new PolySeeds(seedNickelID, cropNickelID, Block.tilledField.blockID, lead, EnumCropType.OVERWORLD)
+			seedNickel = new PolySeeds(seedNickelID, cropNickelID, Block.tilledField.blockID, nickel, EnumCropType.OVERWORLD)
 					.setType("Nickel").setUnlocalizedName("seeds.nickel");
-			cropLead = new PolyCrop(cropNickelID, (ItemSeeds) seedNickel, 3).setFXType(FXType.NICKEL);
+			cropNickel = new PolyCrop(cropNickelID, (ItemSeeds) seedNickel, 3).setFXType(FXType.NICKEL);
 			}
 			
 			
@@ -492,7 +495,7 @@ public class Configs {
 			LanguageRegistry.addName(cropLead, "Lead crop");
 			}
 			
-			if(!leads.isEmpty()) {
+			if(!nickels.isEmpty()) {
 			LanguageRegistry.addName(seedNickel, "Nickel Seeds");
 			LanguageRegistry.addName(cropNickel, "Nickel crop");
 			}
@@ -542,7 +545,7 @@ public class Configs {
 			if(!coppers.isEmpty()) GameRegistry.addSmelting(seedCopper.itemID, ((PolySeeds) seedCopper).getProduct(), 0.0f);
 			if(!silvers.isEmpty()) GameRegistry.addSmelting(seedSilver.itemID, ((PolySeeds) seedSilver).getProduct(), 0.0f);
 			if(!leads.isEmpty())   GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
-			if(!nickels.isEmpty()) GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
+			if(!nickels.isEmpty()) GameRegistry.addSmelting(seedNickel.itemID, ((PolySeeds) seedNickel).getProduct(), 0.0f);
 			
 			
 			// CRAFTING RECIPES
@@ -572,7 +575,7 @@ public class Configs {
 			
 			// TE HOOKS
 			
-			thermalexpansion.api.crafting.CraftingManagers.crucibleManager.addRecipe(10, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("lava", 1000));
+			//thermalexpansion.api.crafting.CraftingManagers.crucibleManager.addRecipe(10, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("lava", 1000));
 			
 		}
 

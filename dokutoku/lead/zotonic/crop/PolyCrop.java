@@ -216,7 +216,6 @@ public class PolyCrop extends BlockCrops {
                 {
                     ++l;
                     par1World.setBlockMetadataWithNotify(par2, par3, par4, l, 2);
-                    System.out.println("Grow!");
                 }
             }
         }
@@ -326,7 +325,7 @@ public class PolyCrop extends BlockCrops {
             this.iconArray[i] = par1IconRegister.registerIcon("carrots_" + i);
         }
         
-        this.iconArray[this.iconArray.length - 1] = par1IconRegister.registerIcon(Reference.MOD_ID+":" + fxtype.toString() + "_crop");
+        this.iconArray[this.iconArray.length - 1] = par1IconRegister.registerIcon(Reference.MOD_ID+":" + fxtype.toString().toLowerCase() + "_crop");
     }
 	
 	@SideOnly(Side.CLIENT)

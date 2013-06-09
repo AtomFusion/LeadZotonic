@@ -50,7 +50,7 @@ public class PolySeeds extends ItemSeeds {
 	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
-		itemIcon = iconRegister.registerIcon(Reference.MOD_ID+":" + dropType + "_seed");
+		itemIcon = iconRegister.registerIcon(Reference.MOD_ID+":" + dropType.toLowerCase() + "_seed");
 	}
 	
 	public ItemStack getProduct() {
