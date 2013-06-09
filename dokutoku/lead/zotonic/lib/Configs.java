@@ -11,17 +11,23 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import dokutoku.lead.zotonic.crops.PolyCrop;
-import dokutoku.lead.zotonic.crops.seeds.PolySeeds;
+import dokutoku.lead.zotonic.crop.EnumCropType;
+import dokutoku.lead.zotonic.crop.PolyCrop;
+import dokutoku.lead.zotonic.crop.seed.PolySeeds;
+import dokutoku.lead.zotonic.item.MagicBucket;
+import dokutoku.lead.zotonic.item.MagicStem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * Codename: Lead Zotonic
@@ -146,6 +152,14 @@ public class Configs {
 		public static Item seedLavaCrystal;
 		public static int  seedLavaCrystalID;
 		
+		// Need some stems up in her'
+		public static Item magicalStem;
+		public static int  magicalStemID;
+		
+		/* Magical Items */
+		public static Item magicBucket;
+		public static int  magicBucketID;
+		
 		public static void init(FMLPreInitializationEvent event) {
 			config = new Configuration(event.getSuggestedConfigurationFile());
 			
@@ -196,6 +210,14 @@ public class Configs {
 			seedLeadID = config.getItem("item", "Lead Seed ID", 5314).getInt(seedLeadID);
 			
 			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
+			
+			/* Crafting Items */
+			magicalStemID = config.getItem("item", "Magical Stem ID", 5316).getInt(magicalStemID);
+			
+			/* Special Items */
+			magicBucketID = config.getItem("item", "Magic Infinite Bucket", 5317).getInt(magicBucketID);
+			
+			
 			
 			config.save();
 			
@@ -251,34 +273,34 @@ public class Configs {
 			
 			/// METALS
 			
-			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron), EnumPlantType.Crop)
+			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron), EnumCropType.OVERWORLD)
 					.setType("Iron").setUnlocalizedName("seeds.iron");
 			cropIron = new PolyCrop(cropIronID, (ItemSeeds) seedIron, 3).setFXType(FXType.IRON);
 			
-			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold), EnumPlantType.Crop)
+			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold), EnumCropType.OVERWORLD)
 					.setType("Gold").setUnlocalizedName("seeds.gold");
 			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 4).setFXType(FXType.GOLD);
 			
 			if(!tins.isEmpty()) {
-			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin, EnumPlantType.Crop)
+			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin, EnumCropType.OVERWORLD)
 					.setType("Tin").setUnlocalizedName("seeds.tin");
 			cropTin = new PolyCrop(cropTinID, (ItemSeeds) seedTin, 2).setFXType(FXType.TIN);
 			}
 			
 			if(!coppers.isEmpty()) {
-			seedCopper = new PolySeeds(seedCopperID, cropCopperID, Block.tilledField.blockID, copper, EnumPlantType.Crop)
+			seedCopper = new PolySeeds(seedCopperID, cropCopperID, Block.tilledField.blockID, copper, EnumCropType.OVERWORLD)
 					.setType("Copper").setUnlocalizedName("seeds.copper");
 			cropCopper = new PolyCrop(cropCopperID, (ItemSeeds) seedCopper, 1).setFXType(FXType.COPPER);
 			}
 			
 			if(!silvers.isEmpty()) {
-			seedSilver = new PolySeeds(seedSilverID, cropSilverID, Block.tilledField.blockID, silver, EnumPlantType.Crop)
+			seedSilver = new PolySeeds(seedSilverID, cropSilverID, Block.tilledField.blockID, silver, EnumCropType.OVERWORLD)
 					.setType("Silver").setUnlocalizedName("seeds.silver");
 			cropSilver = new PolyCrop(cropSilverID, (ItemSeeds) seedSilver, 4).setFXType(FXType.SILVER);
 			}
 			
 			if(!leads.isEmpty()) {
-			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead, EnumPlantType.Crop)
+			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead, EnumCropType.OVERWORLD)
 					.setType("Lead").setUnlocalizedName("seeds.lead");
 			cropLead = new PolyCrop(cropLeadID, (ItemSeeds) seedLead, 3).setFXType(FXType.LEAD);
 			}
@@ -287,54 +309,125 @@ public class Configs {
 			/// RESOURCES
 			
 			seedClay = new PolySeeds(seedClayID, cropClayID, 
-					Block.tilledField.blockID, new ItemStack(Item.clay), EnumPlantType.Crop)
+					Block.tilledField.blockID, new ItemStack(Item.clay), EnumCropType.OVERWORLD)
 					.setType("Clay").setUnlocalizedName("seeds.clay");
 			cropClay = new PolyCrop(cropClayID, (ItemSeeds) seedClay, 2).setFXType(FXType.CLAY);
 			
 			seedRedstone = new PolySeeds(seedRedstoneID, cropRedstoneID,
-					Block.tilledField.blockID, new ItemStack(Item.redstone, 2), EnumPlantType.Crop)
+					Block.tilledField.blockID, new ItemStack(Item.redstone, 2), EnumCropType.OVERWORLD)
 				    .setType("Redstone").setUnlocalizedName("seeds.redstone");
 			cropRedstone = new PolyCrop(cropRedstoneID, (ItemSeeds) seedRedstone, 2).setFXType(FXType.REDSTONE);
 	
 			seedCoal = new PolySeeds(seedCoalID, cropCoalID,
-					Block.tilledField.blockID, new ItemStack(Item.coal), EnumPlantType.Crop)
+					Block.tilledField.blockID, new ItemStack(Item.coal), EnumCropType.OVERWORLD)
 					.setType("Coal").setUnlocalizedName("seeds.coal");
 			cropCoal = new PolyCrop(cropCoalID, (ItemSeeds) seedCoal, 2).setFXType(FXType.COAL);
 	
 			seedNetherrack = new PolySeeds(seedNetherrackID, cropNetherrackID,
-					Block.slowSand.blockID, new ItemStack(Block.netherrack), EnumPlantType.Nether)
+					Block.slowSand.blockID, new ItemStack(Block.netherrack), EnumCropType.NETHER)
 					.setType("Hell").setUnlocalizedName("seeds.netherrack");
 			cropNetherrack = new PolyCrop(cropNetherrackID, (ItemSeeds) seedNetherrack, 3).setFXType(FXType.HELL);
 	
 			seedGlowstone = new PolySeeds(seedGlowstoneID, cropGlowstoneID,
-					Block.slowSand.blockID, new ItemStack(Item.lightStoneDust, 3), EnumPlantType.Nether)
+					Block.slowSand.blockID, new ItemStack(Item.lightStoneDust, 3), EnumCropType.NETHER)
 					.setType("Glow").setUnlocalizedName("seeds.glowstone");
 			cropGlowstone = new PolyCrop(cropGlowstoneID, (ItemSeeds) seedGlowstone, 4).setFXType(FXType.GLOW);
 	
 			seedQuartz = new PolySeeds(seedQuartzID, cropQuartzID,
-					Block.slowSand.blockID, new ItemStack(Item.netherQuartz), EnumPlantType.Nether)
+					Block.slowSand.blockID, new ItemStack(Item.netherQuartz), EnumCropType.NETHER)
 					.setType("Quartz").setUnlocalizedName("seeds.quartz");
 			cropQuartz = new PolyCrop(cropQuartzID, (ItemSeeds) seedQuartz, 3).setFXType(FXType.QUARTZ);
 	
 			seedSoulsand = new PolySeeds(seedSoulsandID, cropSoulsandID,
-					Block.slowSand.blockID, new ItemStack(Block.slowSand), EnumPlantType.Nether)
+					Block.slowSand.blockID, new ItemStack(Block.slowSand), EnumCropType.NETHER)
 					.setType("Soul").setUnlocalizedName("seeds.soulsand");
 			cropSoulsand = new PolyCrop(cropSoulsandID, (ItemSeeds) seedSoulsand, 4).setFXType(FXType.SOUL);
 	
 			seedPearl = new PolySeeds(seedPearlID, cropPearlID,
-					Block.tilledField.blockID, new ItemStack(Item.enderPearl), EnumPlantType.Crop)
+					Block.tilledField.blockID, new ItemStack(Item.enderPearl), EnumCropType.END)
 					.setType("Pearl").setUnlocalizedName("seeds.enderpearl");
 			cropPearl = new PolyCrop(cropPearlID, (ItemSeeds) seedPearl, 5).setFXType(FXType.PEARL);
 
 			seedEndstone = new PolySeeds(seedEndstoneID, cropEndstoneID,
-					Block.tilledField.blockID, new ItemStack(Block.whiteStone), EnumPlantType.Crop)
+					Block.tilledField.blockID, new ItemStack(Block.whiteStone), EnumCropType.END)
 					.setType("End").setUnlocalizedName("seeds.endstone");
 			cropEndstone = new PolyCrop(cropEndstoneID, (ItemSeeds) seedEndstone, 5).setFXType(FXType.END);
 	
 			seedLavaCrystal = new PolySeeds(seedLavaCrystalID, cropLavaCrystalID,
-					Block.tilledField.blockID, new ItemStack(Item.bucketLava), EnumPlantType.Nether)
+					Block.tilledField.blockID, new ItemStack(Item.bucketLava), EnumCropType.LAVA)
 					.setType("Lava").setUnlocalizedName("seeds.lavacrystal");
 			cropLavaCrystal = new PolyCrop(cropLavaCrystalID, (ItemSeeds) seedLavaCrystal, 4).setFXType(FXType.LAVA);
+			
+			magicBucket = new MagicBucket(magicBucketID, Block.waterMoving.blockID).setUnlocalizedName("magic.bucket").setContainerItem(Item.bucketEmpty);
+			
+			
+			// MAGIC CRAFTING RESOURCES
+			
+			magicalStem = new MagicStem(magicalStemID);
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedClay),        new ItemStack(Item.clay),           new ItemStack(magicalStem),
+																									            new ItemStack(magicalStem),
+																									            new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedIron),        new ItemStack(Item.ingotIron),      new ItemStack(magicalStem),
+																									   	        new ItemStack(magicalStem),
+																										        new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedGold),        new ItemStack(Item.ingotGold),      new ItemStack(magicalStem),
+																										        new ItemStack(magicalStem),
+																										        new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedRedstone),    new ItemStack(Item.redstone),       new ItemStack(magicalStem),
+																										        new ItemStack(magicalStem),
+																										        new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedCoal),        new ItemStack(Item.coal),           new ItemStack(magicalStem),
+																									            new ItemStack(magicalStem),
+																									            new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedNetherrack),  new ItemStack(Block.netherrack),    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedGlowstone),   new ItemStack(Item.lightStoneDust), new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedQuartz),      new ItemStack(Item.netherQuartz),   new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedPearl),       new ItemStack(Item.enderPearl),     new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedEndstone),    new ItemStack(Block.whiteStone),    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			if(!tins.isEmpty())
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedTin),    "ingotTin",                new ItemStack(magicalStem),
+																												new ItemStack(magicalStem),
+																												new ItemStack(magicalStem)));
+			if(!coppers.isEmpty())
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedCopper), "ingotCopper",             new ItemStack(magicalStem),
+																										  		new ItemStack(magicalStem),
+																										  		new ItemStack(magicalStem)));
+			if(!silvers.isEmpty())
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedSilver), "ingotSilver",             new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem)));
+			if(!leads.isEmpty())
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedLead),   "ingotLead",               new ItemStack(magicalStem),
+																												new ItemStack(magicalStem),
+																												new ItemStack(magicalStem)));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketLava),     new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem),
+																											    new ItemStack(magicalStem));
+			
+			GameRegistry.addShapelessRecipe(new ItemStack(seedSoulsand),    new ItemStack(Block.slowSand),      new ItemStack(magicalStem),
+																												new ItemStack(magicalStem),
+																												new ItemStack(magicalStem));
 
 			
 			// LANGUAGE REGISTRY
@@ -396,6 +489,10 @@ public class Configs {
 			LanguageRegistry.addName(seedCoal, "Coal Seeds");
 			LanguageRegistry.addName(cropCoal, "Coal crop");
 			
+			LanguageRegistry.addName(magicalStem, "Magical Stem");
+			
+			LanguageRegistry.addName(magicBucket, "Magical Bucket");
+			
 			
 			// SMELTING RECIPES
 			
@@ -421,6 +518,12 @@ public class Configs {
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
 			
+			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketEmpty), new ItemStack(magicalStem));
+			
+			
+			// GRASS DROPS
+			
+			MinecraftForge.addGrassSeed(new ItemStack(magicalStem), 1); // Exceedingly rare. I think a wizard dropped it :3
 		}
 
 }
