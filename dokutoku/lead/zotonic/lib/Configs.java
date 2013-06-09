@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import thermalexpansion.api.item.ItemRegistry;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -17,6 +18,7 @@ import dokutoku.lead.zotonic.crop.seed.PolySeeds;
 import dokutoku.lead.zotonic.item.MagicBucket;
 import dokutoku.lead.zotonic.item.MagicStem;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBucket;
@@ -26,6 +28,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -40,6 +44,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class Configs {
 
 		public static Configuration config;
+		
+		public static TabLeadZotonic cTab = new TabLeadZotonic(CreativeTabs.getNextID(), "Lead Zotonic Crops");
 
 		/** Crops **/
 		// Common resources
@@ -91,6 +97,9 @@ public class Configs {
 		
 		public static Block cropLead;
 		public static int   cropLeadID;
+		
+		public static Block cropNickel;
+		public static int   cropNickelID;
 		
 		// Meh, I'll make it
 		public static Block cropLavaCrystal;
@@ -147,6 +156,9 @@ public class Configs {
 		
 		public static Item seedLead;
 		public static int   seedLeadID;
+		
+		public static Item seedNickel;
+		public static int   seedNickelID;
 		
 		// Meh, I'll make it
 		public static Item seedLavaCrystal;
@@ -206,8 +218,11 @@ public class Configs {
 			
 			seedTinID = config.getItem("item", "Tin Seed ID", 5311).getInt(seedTinID);
 			seedCopperID = config.getItem("item", "Copper Seed ID", 5312).getInt(seedCopperID);
+			
 			seedSilverID = config.getItem("item", "Silver Seed ID", 5313).getInt(seedSilverID);
 			seedLeadID = config.getItem("item", "Lead Seed ID", 5314).getInt(seedLeadID);
+			
+			seedNickelID = config.getItem("item", "Silver Seed ID", 5318).getInt(seedSilverID);
 			
 			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
 			
@@ -231,11 +246,13 @@ public class Configs {
 			ItemStack copper = null;
 			ItemStack silver = null;
 			ItemStack lead   = null;
+			ItemStack nickel = null;
 			
 			ArrayList<ItemStack> tins    = new ArrayList<ItemStack>();
 			ArrayList<ItemStack> coppers = new ArrayList<ItemStack>();
 			ArrayList<ItemStack> silvers = new ArrayList<ItemStack>();
 			ArrayList<ItemStack> leads   = new ArrayList<ItemStack>();  
+			ArrayList<ItemStack> nickels = new ArrayList<ItemStack>();
 			
 			// Try to get TE's ingots first. Personal preference.
 			if(ItemRegistry.getItem("ingotElectrum", 1) != null)
@@ -245,12 +262,14 @@ public class Configs {
 				copper = ItemRegistry.getItem("ingotCopper", 1);
 				silver = ItemRegistry.getItem("ingotSilver", 1);
 				lead   = ItemRegistry.getItem("ingotLead", 1);
+				nickel = ItemRegistry.getItem("ingotNickel", 1);
 				
 				// Satisfy checks
 				tins.add(tin);
 				coppers.add(copper);
 				silvers.add(silver);
 				leads.add(lead);
+				nickels.add(nickel);
 				
 				
 			} else {
@@ -259,6 +278,7 @@ public class Configs {
 				coppers = OreDictionary.getOres("ingotCopper");
 				silvers = OreDictionary.getOres("ingotSilver");
 				leads   = OreDictionary.getOres("ingotLead");
+				nickels = OreDictionary.getOres("ingotNickel");
 				
 				if(!tins.isEmpty())
 					tin = tins.get(0);
@@ -268,6 +288,8 @@ public class Configs {
 					silver = silvers.get(0);
 				if(!leads.isEmpty())
 					lead = leads.get(0);
+				if(!nickels.isEmpty())
+					nickel = nickels.get(0);
 			
 			}
 			
@@ -303,6 +325,12 @@ public class Configs {
 			seedLead = new PolySeeds(seedLeadID, cropLeadID, Block.tilledField.blockID, lead, EnumCropType.OVERWORLD)
 					.setType("Lead").setUnlocalizedName("seeds.lead");
 			cropLead = new PolyCrop(cropLeadID, (ItemSeeds) seedLead, 3).setFXType(FXType.LEAD);
+			}
+			
+			if(!nickels.isEmpty()) {
+			seedLead = new PolySeeds(seedNickelID, cropNickelID, Block.tilledField.blockID, lead, EnumCropType.OVERWORLD)
+					.setType("Nickel").setUnlocalizedName("seeds.nickel");
+			cropLead = new PolyCrop(cropNickelID, (ItemSeeds) seedNickel, 3).setFXType(FXType.NICKEL);
 			}
 			
 			
@@ -358,12 +386,13 @@ public class Configs {
 					.setType("Lava").setUnlocalizedName("seeds.lavacrystal");
 			cropLavaCrystal = new PolyCrop(cropLavaCrystalID, (ItemSeeds) seedLavaCrystal, 4).setFXType(FXType.LAVA);
 			
-			magicBucket = new MagicBucket(magicBucketID, Block.waterMoving.blockID).setUnlocalizedName("magic.bucket").setContainerItem(Item.bucketEmpty);
+			magicBucket = new MagicBucket(magicBucketID, Block.waterMoving.blockID).setUnlocalizedName("magic.bucket")
+					.setContainerItem(Item.bucketEmpty).setCreativeTab(cTab);
 			
 			
 			// MAGIC CRAFTING RESOURCES
 			
-			magicalStem = new MagicStem(magicalStemID);
+			magicalStem = new MagicStem(magicalStemID).setCreativeTab(cTab);
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(seedClay),        new ItemStack(Item.clay),           new ItemStack(magicalStem),
 																									            new ItemStack(magicalStem),
@@ -421,6 +450,11 @@ public class Configs {
 																												new ItemStack(magicalStem),
 																												new ItemStack(magicalStem)));
 			
+			if(!nickels.isEmpty())
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedNickel), "ingotNickel",             new ItemStack(magicalStem),
+																												new ItemStack(magicalStem),
+																												new ItemStack(magicalStem)));
+			
 			GameRegistry.addShapelessRecipe(new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketLava),     new ItemStack(magicalStem),
 																											    new ItemStack(magicalStem),
 																											    new ItemStack(magicalStem));
@@ -456,6 +490,11 @@ public class Configs {
 			if(!leads.isEmpty()) {
 			LanguageRegistry.addName(seedLead, "Lead Seeds");
 			LanguageRegistry.addName(cropLead, "Lead crop");
+			}
+			
+			if(!leads.isEmpty()) {
+			LanguageRegistry.addName(seedNickel, "Nickel Seeds");
+			LanguageRegistry.addName(cropNickel, "Nickel crop");
 			}
 			
 
@@ -503,6 +542,7 @@ public class Configs {
 			if(!coppers.isEmpty()) GameRegistry.addSmelting(seedCopper.itemID, ((PolySeeds) seedCopper).getProduct(), 0.0f);
 			if(!silvers.isEmpty()) GameRegistry.addSmelting(seedSilver.itemID, ((PolySeeds) seedSilver).getProduct(), 0.0f);
 			if(!leads.isEmpty())   GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
+			if(!nickels.isEmpty()) GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
 			
 			
 			// CRAFTING RECIPES
@@ -524,6 +564,16 @@ public class Configs {
 			// GRASS DROPS
 			
 			MinecraftForge.addGrassSeed(new ItemStack(magicalStem), 1); // Exceedingly rare. I think a wizard dropped it :3
+			
+		}
+		
+		public static void postLoad(FMLPostInitializationEvent event)
+		{
+			
+			// TE HOOKS
+			
+			thermalexpansion.api.crafting.CraftingManagers.crucibleManager.addRecipe(10, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("lava", 1000));
+			
 		}
 
 }

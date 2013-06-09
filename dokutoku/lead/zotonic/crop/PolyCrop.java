@@ -9,6 +9,7 @@ import java.util.Random;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dokutoku.lead.zotonic.client.CropParticleFX;
+import dokutoku.lead.zotonic.lib.Configs;
 import dokutoku.lead.zotonic.lib.FXType;
 import dokutoku.lead.zotonic.lib.Reference;
 import dokutoku.lead.zotonic.crop.seed.PolySeeds;
@@ -273,6 +274,9 @@ public class PolyCrop extends BlockCrops {
 		 			 
 		case LEAD:   if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 0.73F, 0.84F, 1.16F);
 		 		     else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.45F, 0.52F, 0.73F); break;
+		 		     
+		case NICKEL: if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 2.55F, 2.55F, 2.22F);
+	     			 else           metalFXEffect(par1World, par2, par3, par4, par5Random, 1.28F, 1.24F, 0.98F); break;
 		 		     
 		case CLAY:   rainFXEffect(par1World, par2 + par5Random.nextFloat(), par3 + 0.9f, par4 + par5Random.nextFloat(), par5Random); break;
 		

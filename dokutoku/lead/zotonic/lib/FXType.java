@@ -12,8 +12,8 @@ package dokutoku.lead.zotonic.lib;
  * @license MIT License (http://opensource.org/licenses/MIT)
  */
 public enum FXType {
-	IRON, /* Done */
-	GOLD, /* Done */
+	IRON, 
+	GOLD, 
 	DIAMOND,
 	COAL,
 	CLAY,
@@ -25,9 +25,10 @@ public enum FXType {
 	SOUL,
 	END,
 	LAVA,
-	TIN, /* Done */
-	COPPER, /* Done */
-	SILVER, /* Done */
-	LEAD, /* Done */
+	TIN,
+	COPPER, 
+	SILVER, 
+	LEAD, 
+	NICKEL,
 	DYE,
 }

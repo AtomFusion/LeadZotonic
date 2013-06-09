@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dokutoku.lead.zotonic.crop.EnumCropType;
 import dokutoku.lead.zotonic.crop.PolyCrop;
+import dokutoku.lead.zotonic.lib.Configs;
 import dokutoku.lead.zotonic.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -42,6 +43,8 @@ public class PolySeeds extends ItemSeeds {
 		this.blockType = par2;
 		this.smeltProduct = smeltProduct;
 		this.plantType = plantType;
+		
+		this.setCreativeTab(Configs.cTab);
 	}
 	
 	@Override

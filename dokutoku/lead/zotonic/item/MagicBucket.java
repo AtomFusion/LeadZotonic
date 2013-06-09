@@ -3,7 +3,9 @@
  */
 package dokutoku.lead.zotonic.item;
 
+import dokutoku.lead.zotonic.lib.Reference;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -133,5 +135,10 @@ public class MagicBucket extends ItemBucket {
 
         return par1ItemStack;
     }
+	
+	public void registerIcons(IconRegister iReg)
+	{
+		itemIcon = iReg.registerIcon(Reference.MOD_ID+":" + "magic_bucket");
+	}
 
 }
