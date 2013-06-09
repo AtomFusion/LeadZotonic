@@ -4,7 +4,10 @@
 package dokutoku.lead.zotonic.lib;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import thermalexpansion.api.crafting.CraftingManagers;
+import thermalexpansion.api.crafting.ICrucibleManager;
 import thermalexpansion.api.item.ItemRegistry;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -17,6 +20,7 @@ import dokutoku.lead.zotonic.crop.PolyCrop;
 import dokutoku.lead.zotonic.crop.seed.PolySeeds;
 import dokutoku.lead.zotonic.item.MagicBucket;
 import dokutoku.lead.zotonic.item.MagicStem;
+import dokutoku.lead.zotonic.util.LeadLogger;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -561,7 +565,7 @@ public class Configs {
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
 			
-			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketEmpty), new ItemStack(magicalStem));
+			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
 			
 			
 			// GRASS DROPS
@@ -575,7 +579,9 @@ public class Configs {
 			
 			// TE HOOKS
 			
-			//thermalexpansion.api.crafting.CraftingManagers.crucibleManager.addRecipe(10, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("lava", 1000));
+			LeadLogger.log(Level.INFO, "Adding TE Crucible Recipe.");
+			
+			CraftingManagers.crucibleManager.addRecipe(100, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("Lava", 1000));
 			
 		}
 
