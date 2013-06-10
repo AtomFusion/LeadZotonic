@@ -454,8 +454,6 @@ public class Configs {
 				Character.valueOf('y'), new ItemStack(seed.getItem().getProduct());
 			}
 			
-			/*
-			
 			if(!tins.isEmpty())
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedTin),
 				"xxx",
@@ -495,8 +493,6 @@ public class Configs {
 				"xxx",
 			Character.valueOf('x'), stem,
 			Character.valueOf('y'), "ingotNickel"));
-			
-			*/
 
 			
 			// LANGUAGE REGISTRY
