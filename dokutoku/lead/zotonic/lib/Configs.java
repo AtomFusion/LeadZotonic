@@ -185,6 +185,18 @@ public class Configs {
 		/* Magical Items */
 		public static Item magicBucket;
 		public static int  magicBucketID;
+		
+		public static Item magicHelmet;
+		public static int  magicHelmetID;
+		
+		public static Item magicWings;
+		public static int  magicWingsID;
+		
+		public static Item magicLeggings;
+		public static int  magicLegginsID;
+		
+		public static Item magicBoots;
+		public static int  magicBootsID;
 
 		/* Crop Collection */
 		public static ArrayList<Block> crops = new ArrayList<Block>();
@@ -256,6 +268,14 @@ public class Configs {
 			
 			/* Special Items */
 			magicBucketID = config.getItem("item", "Magic Infinite Bucket", 5317).getInt(magicBucketID);
+			
+			magicHelmetID = config.getItem("armor", "Magic Helmet", 5320).getInt(magicHelmetID);
+			
+			magicWingsID = config.getItem("armor", "Magic Chestplate", 5321).getInt(magicWingsID);
+			
+			magicLegginsID = config.getItem("armor", "Magic Leggings", 5322).getInt(magicLegginsID);
+			
+			magicBootsID = config.getItem("armor", "Magic Boots", 5323).getInt(magicBootsID);
 			
 			
 			
@@ -646,17 +666,6 @@ public class Configs {
 				} catch(Exception e) {
 					LeadLogger.log(Level.SEVERE, "Could not load Thermal Expansion recipes");
 					e.printStackTrace(System.err);
-				}
-			}
-			
-			
-			// FORESTRY INTEGRATION
-			
-			if(Loader.isModLoaded("Forestry")) {
-				try {
-					
-				} catch(Exception e) {
-					
 				}
 			}
 			
