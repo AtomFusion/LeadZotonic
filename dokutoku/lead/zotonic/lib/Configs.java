@@ -22,6 +22,8 @@ import dokutoku.lead.zotonic.crop.seed.PolySeeds;
 import dokutoku.lead.zotonic.item.MagicBucket;
 import dokutoku.lead.zotonic.item.MagicStem;
 import dokutoku.lead.zotonic.util.LeadLogger;
+import forestry.api.core.ForestryAPI;
+import forestry.api.core.GlobalManager;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -644,6 +646,17 @@ public class Configs {
 				} catch(Exception e) {
 					LeadLogger.log(Level.SEVERE, "Could not load Thermal Expansion recipes");
 					e.printStackTrace(System.err);
+				}
+			}
+			
+			
+			// FORESTRY INTEGRATION
+			
+			if(Loader.isModLoaded("Forestry")) {
+				try {
+					
+				} catch(Exception e) {
+					
 				}
 			}
 			

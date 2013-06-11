@@ -4,6 +4,7 @@
 package dokutoku.lead.zotonic.crop;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 import cpw.mods.fml.relauncher.Side;
@@ -13,6 +14,8 @@ import dokutoku.lead.zotonic.lib.Configs;
 import dokutoku.lead.zotonic.lib.FXType;
 import dokutoku.lead.zotonic.lib.Reference;
 import dokutoku.lead.zotonic.crop.seed.PolySeeds;
+import forestry.api.farming.ICrop;
+import forestry.api.farming.IFarmable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
@@ -107,54 +110,33 @@ public class PolyCrop extends BlockCrops {
         
         //par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
     }
-	
-	/**
-	 *  Drops only 2 things: A yield and a seed. Whether it drops more seeds/yield is luck.
-	 *  As far as I can tell,
-	 *  par2 is x
-	 *  par3 is y
-	 *  par4 is z
-	 *  par5 is metadata (like growth or wool color)
-	 *  par6 is fortune (I think)
-	 *  par7 is set to 0 by the superclass. Ignore it.
-	 */
-	@Override
-	public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
-    {
-		super.dropBlockAsItemWithChance(par1World, par2, par3, par4, par5, par6, par7);
-		
-        if (!par1World.isRemote) // Are we the server?
-        {
-        	ItemStack[] items = new ItemStack[]{ new ItemStack(seed, 1)};
-        	
-        	// Are we mature enough?
-        	if(par5 >= 7) {
-        		
-	        	for(ItemStack item : items)
-	        	{
-	        		float c = par1World.rand.nextFloat() + ((float)rarity / 10.0f);
-		            if (c <= 0.7f)
-		            {
-		                this.dropBlockAsItem_do(par1World, par2, par3, par4, item);
-		                
-		                // If c is super low, triple the output
-		                if(c <= 0.1f)
-		                {
-		                	this.dropBlockAsItem_do(par1World, par2, par3, par4, item);
-		                }
-		            }
-	        	}
-	        	
-        	}
-        	
-        }
-        
-    }
+
 	
 	@Override 
     public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
     {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+    	ItemStack[] items = new ItemStack[]{ new ItemStack(seed, 1)};
+    	
+    	// Are we mature enough?
+    	if(metadata >= 7) {
+    		
+        	for(ItemStack item : items)
+        	{
+	            if (world.rand.nextInt(15 + (rarity - 3)) <= 7)
+	            {
+	                ret.add(item);
+	                
+	                // Playing with triples
+	                if(world.rand.nextInt(30 + (rarity)) <= 10)
+	                {
+	                	ret.add(item);
+	                }
+	            }
+        	}
+        	
+    	}
+		
 		ret.add(new ItemStack(seed, 1));
 		return ret;
     }
