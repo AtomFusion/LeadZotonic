@@ -304,6 +304,9 @@ public class PolyCrop extends BlockCrops {
 		case END:
 		case PEARL: par1World.spawnParticle("townaura", par2 + par5Random.nextFloat(), par3 + 0.5f, par4 + par5Random.nextFloat(),
  	 		   		0.0f, 0.00f, 0.0f); break;
+ 	 		   		
+		case LAPIS: if(randu == 1) metalFXEffect(par1World, par2, par3, par4, par5Random, 0.10F, 0.43F, 1.22F);
+	     		    else           metalFXEffect(par1World, par2, par3, par4, par5Random, 0.90F, 1.30F, 2.26F); break;
 		
 		default:   break;
 		}

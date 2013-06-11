@@ -10,6 +10,7 @@ import thermalexpansion.api.crafting.CraftingManagers;
 import thermalexpansion.api.crafting.ICrucibleManager;
 import thermalexpansion.api.item.ItemRegistry;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -35,6 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
@@ -183,10 +185,10 @@ public class Configs {
 		public static int  magicBucketID;
 
 		/* Crop Collection */
-		ArrayList<PolyCrop> crops = new ArrayList<PolyCrop>();
+		public static ArrayList<Block> crops = new ArrayList<Block>();
 
 		/* Seeds Collection */
-		ArrayList<PolySeeds> seeds = new ArrayList<PolySeeds>();
+		public static ArrayList<Item> seeds = new ArrayList<Item>();
 		
 		public static void init(FMLPreInitializationEvent event) {
 			config = new Configuration(event.getSuggestedConfigurationFile());
@@ -328,7 +330,7 @@ public class Configs {
 					.setType("Gold").setUnlocalizedName("seeds.gold");
 			seeds.add(seedGold);
 			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 4).setFXType(FXType.GOLD);
-			crops.add(cropsGold);
+			crops.add(cropGold);
 			
 			if(!tins.isEmpty()) {
 			seedTin = new PolySeeds(seedTinID, cropTinID, Block.tilledField.blockID, tin, EnumCropType.OVERWORLD)
@@ -447,6 +449,13 @@ public class Configs {
 			magicBucket = new MagicBucket(magicBucketID, Block.waterMoving.blockID).setUnlocalizedName("magic.bucket")
 					.setContainerItem(Item.bucketEmpty).setCreativeTab(cTab);
 			
+			seedLapis = new PolySeeds(seedLapisID, cropLapisID,
+					Block.tilledField.blockID, new ItemStack(Item.dyePowder, 2, 4), EnumCropType.OVERWORLD)
+					.setType("Lapis").setUnlocalizedName("seeds.lapis");
+			seeds.add(seedLapis);
+			cropLapis = new PolyCrop(cropLapisID, (ItemSeeds) seedLapis, 3).setFXType(FXType.LAPIS);
+			crops.add(cropLapis);
+			
 			
 			// MAGIC CRAFTING RESOURCES
 			
@@ -454,17 +463,15 @@ public class Configs {
 			
 			ItemStack stem = new ItemStack(magicalStem);
 			
-			for(seed : seeds)
+			for(Item seed : seeds)
 			{
-				GameRegistry.addRecipe(new ItemStack(this),
+				GameRegistry.addRecipe(new ItemStack(seed),
 				"xxx",
 				"xyx",
 				"xxx",
 				Character.valueOf('x'), stem,
-				Character.valueOf('y'), new ItemStack(seed.getItem().getProduct());
+				Character.valueOf('y'), new ItemStack(((PolySeeds)seed).getProduct().getItem()));
 			}
-			
-			/*
 			
 			if(!tins.isEmpty())
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedTin),
@@ -505,8 +512,6 @@ public class Configs {
 				"xxx",
 			Character.valueOf('x'), stem,
 			Character.valueOf('y'), "ingotNickel"));
-			
-			*/
 
 			
 			// LANGUAGE REGISTRY
@@ -573,6 +578,9 @@ public class Configs {
 			LanguageRegistry.addName(seedCoal, "Coal Seeds");
 			LanguageRegistry.addName(cropCoal, "Coal crop");
 			
+			LanguageRegistry.addName(seedLapis, "Lapis Seeds");
+			LanguageRegistry.addName(cropLapis, "Lapis crop");
+			
 			LanguageRegistry.addName(magicalStem, "Magical Stem");
 			
 			LanguageRegistry.addName(magicBucket, "Magical Bucket");
@@ -601,6 +609,7 @@ public class Configs {
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedSoulsand).getProduct(), new ItemStack(seedSoulsand));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedPearl).getProduct(), new ItemStack(seedPearl));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
+			GameRegistry.addShapelessRecipe(((PolySeeds) seedLapis).getProduct(), new ItemStack(seedLapis));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
@@ -629,10 +638,14 @@ public class Configs {
 			
 			// TE HOOKS
 			
-			LeadLogger.log(Level.INFO, "Adding TE Crucible Recipe.");
-			
-			
-			CraftingManagers.crucibleManager.addRecipe(100, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("Lava", 1000));
+			if(Loader.isModLoaded("ThermalExpansion")) {
+				try {
+					CraftingManagers.crucibleManager.addRecipe(100, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("Lava", 1000));
+				} catch(Exception e) {
+					LeadLogger.log(Level.SEVERE, "Could not load Thermal Expansion recipes");
+					e.printStackTrace(System.err);
+				}
+			}
 			
 		}
 

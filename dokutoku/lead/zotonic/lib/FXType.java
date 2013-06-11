@@ -30,5 +30,5 @@ public enum FXType {
 	SILVER, 
 	LEAD, 
 	NICKEL,
-	DYE,
+	LAPIS,
 }
