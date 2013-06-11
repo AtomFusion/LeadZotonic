@@ -69,6 +69,9 @@ public class Configs {
 		public static Block cropCoal;
 		public static int   cropCoalID;
 		
+		public static Block cropLapis;
+		public static int   cropLapisID;
+		
 		// Nether resources
 		public static Block cropNetherrack;
 		public static int   cropNetherrackID;
@@ -127,6 +130,9 @@ public class Configs {
 		
 		public static Item seedCoal;
 		public static int   seedCoalID;
+		
+		public static Item seedLapis;
+		public static int  seedLapisID;
 		
 		// Nether resources
 		public static Item seedNetherrack;
@@ -205,6 +211,8 @@ public class Configs {
 			
 			cropLavaCrystalID = config.getBlock("block", "Lava Crystal Crop ID", 2815).getInt(cropLavaCrystalID);
 			
+			cropLapisID = config.getBlock("block", "Lapis Lazuli Crop ID", 2817).getInt(cropLavaCrystalID);
+			
 			/* Seeds */
 			seedIronID = config.getItem("item", "Iron Seed ID", 5300).getInt(seedIronID);
 			seedGoldID = config.getItem("item", "Gold Seed ID", 5301).getInt(seedGoldID);
@@ -230,6 +238,8 @@ public class Configs {
 			seedNickelID = config.getItem("item", "Nickel Seed ID", 5318).getInt(seedNickelID);
 			
 			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
+			
+			seedLapisID = config.getItem("item", "Lapis Lazuli Seed ID", 5319).getInt(seedLapisID);
 			
 			/* Crafting Items */
 			magicalStemID = config.getItem("item", "Magical Stem ID", 5316).getInt(magicalStemID);
@@ -344,12 +354,12 @@ public class Configs {
 			/// RESOURCES
 			
 			seedClay = new PolySeeds(seedClayID, cropClayID, 
-					Block.tilledField.blockID, new ItemStack(Item.clay), EnumCropType.OVERWORLD)
+					Block.tilledField.blockID, new ItemStack(Item.clay, 3), EnumCropType.OVERWORLD)
 					.setType("Clay").setUnlocalizedName("seeds.clay");
 			cropClay = new PolyCrop(cropClayID, (ItemSeeds) seedClay, 2).setFXType(FXType.CLAY);
 			
 			seedRedstone = new PolySeeds(seedRedstoneID, cropRedstoneID,
-					Block.tilledField.blockID, new ItemStack(Item.redstone, 2), EnumCropType.OVERWORLD)
+					Block.tilledField.blockID, new ItemStack(Item.redstone, 3), EnumCropType.OVERWORLD)
 				    .setType("Redstone").setUnlocalizedName("seeds.redstone");
 			cropRedstone = new PolyCrop(cropRedstoneID, (ItemSeeds) seedRedstone, 2).setFXType(FXType.REDSTONE);
 	
@@ -567,6 +577,7 @@ public class Configs {
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
 			
+			addMiscRecipes();
 			
 			// GRASS DROPS
 			
@@ -574,12 +585,24 @@ public class Configs {
 			
 		}
 		
+		/**
+		 * 
+		 */
+		private static void addMiscRecipes() {
+			
+			// Zombie Flesh to Leather
+			
+			GameRegistry.addSmelting(Item.rottenFlesh.itemID, new ItemStack(Item.leather), 0.2f);
+			
+		}
+
 		public static void postLoad(FMLPostInitializationEvent event)
 		{
 			
 			// TE HOOKS
 			
 			LeadLogger.log(Level.INFO, "Adding TE Crucible Recipe.");
+			
 			
 			CraftingManagers.crucibleManager.addRecipe(100, new ItemStack(seedLavaCrystal), LiquidDictionary.getLiquid("Lava", 1000));
 			
