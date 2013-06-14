@@ -8,7 +8,7 @@ public final class Reference {
 	/* The general stuff */
 	public static final String MOD_ID = "LeadZotonic";
 	public static final String MOD_NAME = "Golden Thumb";
-	public static final String VERSION_NUMBER = "1.5.2a027";
+	public static final String VERSION_NUMBER = "1.5.2a028";
 	public static final String CHANNEL_NAME = MOD_ID;
 	public static final String DEPENDENCIES = 
 			"after:ThermalExpansion;" + 
