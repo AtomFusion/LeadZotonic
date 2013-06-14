@@ -299,11 +299,11 @@ public class Configs {
 			if(ItemRegistry.getItem("ingotElectrum", 1) != null)
 			{
 				
-				tin    = ItemRegistry.getItem("ingotTin", 1);
-				copper = ItemRegistry.getItem("ingotCopper", 1);
-				silver = ItemRegistry.getItem("ingotSilver", 1);
-				lead   = ItemRegistry.getItem("ingotLead", 1);
-				nickel = ItemRegistry.getItem("ingotNickel", 1);
+				tin    = ItemRegistry.getItem("oreTin", 1);
+				copper = ItemRegistry.getItem("oreCopper", 1);
+				silver = ItemRegistry.getItem("oreSilver", 1);
+				lead   = ItemRegistry.getItem("oreLead", 1);
+				nickel = ItemRegistry.getItem("oreNickel", 1);
 				
 				// Satisfy checks
 				tins.add(tin);
@@ -315,11 +315,11 @@ public class Configs {
 				
 			} else {
 			
-				tins    = OreDictionary.getOres("ingotTin");
-				coppers = OreDictionary.getOres("ingotCopper");
-				silvers = OreDictionary.getOres("ingotSilver");
-				leads   = OreDictionary.getOres("ingotLead");
-				nickels = OreDictionary.getOres("ingotNickel");
+				tins    = OreDictionary.getOres("oreTin");
+				coppers = OreDictionary.getOres("oreCopper");
+				silvers = OreDictionary.getOres("oreSilver");
+				leads   = OreDictionary.getOres("oreLead");
+				nickels = OreDictionary.getOres("oreNickel");
 				
 				if(!tins.isEmpty())
 					tin = tins.get(0);
@@ -336,13 +336,13 @@ public class Configs {
 			
 			/// METALS
 			
-			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Item.ingotIron), EnumCropType.OVERWORLD)
+			seedIron = new PolySeeds(seedIronID, cropIronID, Block.tilledField.blockID, new ItemStack(Block.oreIron), EnumCropType.OVERWORLD)
 					.setType("Iron").setUnlocalizedName("seeds.iron");
 			seeds.add(seedIron);
 			cropIron = new PolyCrop(cropIronID, (ItemSeeds) seedIron, 3).setFXType(FXType.IRON);
 			crops.add(cropIron);
 			
-			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Item.ingotGold), EnumCropType.OVERWORLD)
+			seedGold = new PolySeeds(seedGoldID, cropGoldID, Block.tilledField.blockID, new ItemStack(Block.oreGold), EnumCropType.OVERWORLD)
 					.setType("Gold").setUnlocalizedName("seeds.gold");
 			seeds.add(seedGold);
 			cropGold = new PolyCrop(cropGoldID, (ItemSeeds) seedGold, 4).setFXType(FXType.GOLD);
@@ -576,7 +576,7 @@ public class Configs {
 			
 			// SMELTING RECIPES
 			
-			GameRegistry.addSmelting(seedIron.itemID, ((PolySeeds) seedIron).getProduct(), 0.0f);
+			/* GameRegistry.addSmelting(seedIron.itemID, ((PolySeeds) seedIron).getProduct(), 0.0f);
 			GameRegistry.addSmelting(seedGold.itemID, ((PolySeeds) seedGold).getProduct(), 0.0f);
 			
 			if(!tins.isEmpty())    GameRegistry.addSmelting(seedTin.itemID, ((PolySeeds) seedTin).getProduct(), 0.0f);
@@ -584,10 +584,15 @@ public class Configs {
 			if(!silvers.isEmpty()) GameRegistry.addSmelting(seedSilver.itemID, ((PolySeeds) seedSilver).getProduct(), 0.0f);
 			if(!leads.isEmpty())   GameRegistry.addSmelting(seedLead.itemID, ((PolySeeds) seedLead).getProduct(), 0.0f);
 			if(!nickels.isEmpty()) GameRegistry.addSmelting(seedNickel.itemID, ((PolySeeds) seedNickel).getProduct(), 0.0f);
-			
+			*/
 			
 			// CRAFTING RECIPES
 			
+			for (Item seed : seeds) {
+				GameRegistry.addShapelessRecipe(((PolySeeds) seed).getProduct(), new ItemStack(seed));
+			}
+			
+			/* 
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedClay).getProduct(), new ItemStack(seedClay));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedCoal).getProduct(), new ItemStack(seedCoal));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedRedstone).getProduct(), new ItemStack(seedRedstone));
@@ -598,6 +603,7 @@ public class Configs {
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedPearl).getProduct(), new ItemStack(seedPearl));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
+			*/
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
 			
@@ -617,23 +623,7 @@ public class Configs {
 			ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_LIBRARY, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
 			ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_CROSSING, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
 			
-			// MFR HOOKS
 			
-						if(Loader.isModLoaded("MineFactoryReloaded")) {
-							try {
-								LeadLogger.log(Level.INFO, "Loading MFR Support.");
-								
-								for(Block crop : crops) {
-									FarmingRegistry.registerHarvestable((IFactoryHarvestable)crop);
-									FarmingRegistry.registerFertilizable((IFactoryFertilizable)crop);
-									FarmingRegistry.registerPlantable(new PlantableCropPlant(((PolyCrop)crop).getSeedItem(), ((PolyCrop)crop).getCropItem()));
-								}
-								
-							} catch(Exception e) {
-								LeadLogger.log(Level.SEVERE, "Could not load MFR integration.");
-								e.printStackTrace(System.err);
-							}
-						}
 			
 		}
 		
@@ -662,6 +652,23 @@ public class Configs {
 				}
 			}
 			
+			// MFR HOOKS
+			
+			if(Loader.isModLoaded("MineFactoryReloaded")) {
+				try {
+					LeadLogger.log(Level.INFO, "Loading MFR Support.");
+					
+					for(Block crop : crops) {
+						FarmingRegistry.registerHarvestable((IFactoryHarvestable)crop);
+						FarmingRegistry.registerFertilizable((IFactoryFertilizable)crop);
+						FarmingRegistry.registerPlantable(new PlantableCropPlant(((PolyCrop)crop).getSeedItem(), ((PolyCrop)crop).getCropItem()));
+					}
+					
+				} catch(Exception e) {
+					LeadLogger.log(Level.SEVERE, "Could not load MFR integration.");
+					e.printStackTrace(System.err);
+				}
+			}
 			
 			
 		}
