@@ -24,7 +24,7 @@ public class MagicStem extends Item {
 	public MagicStem(int par1) {
 		super(par1);
 		
-		setMaxStackSize(16);
+		setMaxStackSize(64);
 		setUnlocalizedName("seeds.stem");
 		setCreativeTab(CreativeTabs.tabMisc);
 	}
