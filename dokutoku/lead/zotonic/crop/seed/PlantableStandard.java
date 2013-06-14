@@ -28,7 +28,6 @@ public class PlantableStandard implements IFactoryPlantable {
 
 	public PlantableStandard(int sourceId, int plantedBlockId)
 	{
-		LeadLogger.log(Level.SEVERE, "Constructor called");
 		if(plantedBlockId >= Block.blocksList.length)
 		{
 			throw new IllegalArgumentException("Passed an Item ID to FactoryPlantableStandard's planted block argument");
@@ -40,7 +39,6 @@ public class PlantableStandard implements IFactoryPlantable {
 	@Override
 	public boolean canBePlantedHere(World world, int x, int y, int z, ItemStack stack)
 	{
-		LeadLogger.log(Level.SEVERE, "canBePlantedHere called");
 		int groundId = world.getBlockId(x, y - 1, z);
 		if(!world.isAirBlock(x, y, z))
 		{
@@ -55,21 +53,18 @@ public class PlantableStandard implements IFactoryPlantable {
 	@Override
 	public void prePlant(World world, int x, int y, int z, ItemStack stack)
 	{
-		LeadLogger.log(Level.SEVERE, "prePlant called");
 		return;
 	}
 
 	@Override
 	public void postPlant(World world, int x, int y, int z, ItemStack stack)
 	{
-		LeadLogger.log(Level.SEVERE, "postPlant called");
 		return;
 	}
 
 	@Override
 	public int getPlantedBlockId(World world, int x, int y, int z, ItemStack stack)
 	{
-		LeadLogger.log(Level.SEVERE, "getPlantedBlockId called");
 		if(stack.itemID != _sourceId)
 		{
 			return -1;
@@ -80,14 +75,12 @@ public class PlantableStandard implements IFactoryPlantable {
 	@Override
 	public int getPlantedBlockMetadata(World world, int x, int y, int z, ItemStack stack)
 	{
-		LeadLogger.log(Level.SEVERE, "getPlantedBlockMetadata called");
 		return stack.getItemDamage();
 	}
 
 	@Override
 	public int getSeedId()
 	{
-		LeadLogger.log(Level.SEVERE, "getSeedId called");
 		return _sourceId;
 	}
 
