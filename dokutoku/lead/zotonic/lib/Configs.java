@@ -64,7 +64,7 @@ public class Configs {
 
 		public static Configuration config;
 		
-		public static TabLeadZotonic cTab = new TabLeadZotonic(CreativeTabs.getNextID(), "Lead Zotonic Crops");
+		public static TabLeadZotonic cTab = new TabLeadZotonic(CreativeTabs.getNextID(), "Golden Thumb Crops");
 
 		/** Crops **/
 		// Common resources
