@@ -5,6 +5,8 @@ package dokutoku.lead.zotonic.crop.seed;
 
 import java.util.HashMap;
 
+import powercrystals.minefactoryreloaded.api.IFactoryPlantable;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dokutoku.lead.zotonic.crop.EnumCropType;
@@ -21,6 +23,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.IPlantable;
 
 /**
  * Codename: Lead Zotonic
@@ -30,12 +33,14 @@ import net.minecraftforge.common.ForgeDirection;
  * @author Atomfusion/DokuToku
  * @license MIT License (http://opensource.org/licenses/MIT)
  */
-public class PolySeeds extends ItemSeeds {
+public class PolySeeds extends ItemSeeds implements IPlantable {
 	
 	private String dropType;
 	private ItemStack smeltProduct;
 	private EnumCropType plantType;
 	private int blockType;
+	private int _id;
+	private int _blockType;
 
 	public PolySeeds(int par1, int par2, int par3, ItemStack smeltProduct, EnumCropType plantType) {
 		super(par1, par2, par3);
@@ -43,6 +48,8 @@ public class PolySeeds extends ItemSeeds {
 		this.blockType = par2;
 		this.smeltProduct = smeltProduct;
 		this.plantType = plantType;
+		this._id = par1;
+		this._blockType = par2;
 		
 		this.setCreativeTab(Configs.cTab);
 	}

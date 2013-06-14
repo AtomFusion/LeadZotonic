@@ -5,7 +5,14 @@ package dokutoku.lead.zotonic.crop;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import powercrystals.minefactoryreloaded.api.FertilizerType;
+import powercrystals.minefactoryreloaded.api.HarvestType;
+import powercrystals.minefactoryreloaded.api.IFactoryFertilizable;
+import powercrystals.minefactoryreloaded.api.IFactoryHarvestable;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -41,13 +48,14 @@ import net.minecraftforge.common.EnumPlantType;
  * @author Atomfusion/DokuToku
  * @license MIT License (http://opensource.org/licenses/MIT)
  */
-public class PolyCrop extends BlockCrops {
+public class PolyCrop extends BlockCrops implements IFactoryFertilizable, IFactoryHarvestable {
 	
 	protected ItemSeeds seed;
 	protected int       rarity = 3;
 	protected FXType    fxtype = FXType.IRON;
 	private   Icon      iconArray[];
 	private   boolean   fullyGrown = false;
+	private	  int		_id;
 	
 	
 	/**
@@ -57,10 +65,9 @@ public class PolyCrop extends BlockCrops {
 		
 		super(par1);
 		
+		this._id = par1;
 		this.seed = seed;
 		this.rarity = rarity;
-		
-		this.setLightValue(0.4f);
 	
 	}
 	
@@ -87,7 +94,7 @@ public class PolyCrop extends BlockCrops {
      * Generate a seed ItemStack for this crop.
      */
 	@Override
-    protected int getSeedItem()
+    public int getSeedItem()
     {
         return seed.itemID;
     }
@@ -96,9 +103,9 @@ public class PolyCrop extends BlockCrops {
      * Generate a crop produce ItemStack for this crop.
      */
 	@Override
-    protected int getCropItem()
+    public int getCropItem()
     {
-        return seed.itemID;
+        return this._id;
     }
 	
 	@Override
@@ -274,7 +281,7 @@ public class PolyCrop extends BlockCrops {
            	 		   0.0f, 0.00f, 0.0f); break;
 		
 		case SOUL:
-		case QUARTZ:
+		case QUARTZ: 
 		case GLOW: par1World.spawnParticle("portal", par2 + par5Random.nextFloat(), par3 + 0.1f, par4 + par5Random.nextFloat(),
     	 		   0.0f, 0.00f, 0.0f); break;
     	 		   
@@ -374,6 +381,86 @@ public class PolyCrop extends BlockCrops {
             world.notifyBlocksOfNeighborChange(x, y, z - 1, this.blockID);
             world.notifyBlocksOfNeighborChange(x, y, z + 1, this.blockID);
 		}
+	}
+
+
+	@Override
+	public HarvestType getHarvestType() {
+		return HarvestType.Normal;
+	}
+
+
+	@Override
+	public boolean breakBlock() {
+		return true;
+	}
+
+
+	@Override
+	public boolean canBeHarvested(World world,
+			Map<String, Boolean> harvesterSettings, int x, int y, int z) {
+		return world.getBlockMetadata(x, y, z) >= 7;
+	}
+
+
+	@Override
+	public List<ItemStack> getDrops(World world, Random rand,
+			Map<String, Boolean> harvesterSettings, int x, int y, int z) {
+		return Block.blocksList[_id].getBlockDropped(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+	}
+
+
+	@Override
+	public void preHarvest(World world, int x, int y, int z) {
+
+		
+		
+	}
+
+
+	@Override
+	public void postHarvest(World world, int x, int y, int z) {
+
+		
+		
+	}
+
+
+	@Override
+	public int getFertilizableBlockId() {
+
+		return _id;
+		
+	}
+
+
+	@Override
+	public boolean canFertilizeBlock(World world, int x, int y, int z,
+			FertilizerType fertilizerType) {
+
+		return fertilizerType == FertilizerType.GrowPlant && world.getBlockMetadata(x, y, z) < 7;
+		
+	}
+
+
+	@Override
+	public boolean fertilize(World world, Random rand, int x, int y, int z,
+			FertilizerType fertilizerType) {
+		
+		int m = world.getBlockMetadata(x, y, z);
+		if(m < 7)
+		{
+			// 3 is 2, send change to client, plus 1, cause block update
+			world.setBlockMetadataWithNotify(x, y, z, m+1, 3);
+			return true;
+		}
+		return false;
+		
+	}
+
+	@Override
+	public int getPlantId() {
+		return _id;
 	}
 
 }

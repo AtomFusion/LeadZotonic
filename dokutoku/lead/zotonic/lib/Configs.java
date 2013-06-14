@@ -3,8 +3,14 @@
  */
 package dokutoku.lead.zotonic.lib;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
+
+import powercrystals.minefactoryreloaded.api.FarmingRegistry;
+import powercrystals.minefactoryreloaded.api.IFactoryFertilizable;
+import powercrystals.minefactoryreloaded.api.IFactoryHarvestable;
+import powercrystals.minefactoryreloaded.api.IFactoryPlantable;
 
 import thermalexpansion.api.crafting.CraftingManagers;
 import thermalexpansion.api.crafting.ICrucibleManager;
@@ -18,6 +24,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import dokutoku.lead.zotonic.crop.EnumCropType;
 import dokutoku.lead.zotonic.crop.PolyCrop;
+import dokutoku.lead.zotonic.crop.seed.PlantableCropPlant;
+import dokutoku.lead.zotonic.crop.seed.PlantableStandard;
 import dokutoku.lead.zotonic.crop.seed.PolySeeds;
 import dokutoku.lead.zotonic.item.MagicBucket;
 import dokutoku.lead.zotonic.item.MagicStem;
@@ -32,7 +40,10 @@ import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.LiquidDictionary;
@@ -72,9 +83,6 @@ public class Configs {
 		
 		public static Block cropCoal;
 		public static int   cropCoalID;
-		
-		public static Block cropLapis;
-		public static int   cropLapisID;
 		
 		// Nether resources
 		public static Block cropNetherrack;
@@ -134,9 +142,6 @@ public class Configs {
 		
 		public static Item seedCoal;
 		public static int  seedCoalID;
-		
-		public static Item seedLapis;
-		public static int  seedLapisID;
 		
 		// Nether resources
 		public static Item seedNetherrack;
@@ -210,72 +215,61 @@ public class Configs {
 			config.load();
 			
 			/* Crops */
-			cropIronID = config.getBlock("block", "Iron Crop ID", 2800).getInt(cropIronID);
-			cropGoldID = config.getBlock("block", "Gold Crop ID", 2801).getInt(cropGoldID);
-			cropClayID = config.getBlock("block", "Clay Crop ID", 2802).getInt(cropClayID);
+			cropIronID = config.getBlock("crop", "Iron Crop ID", 2800).getInt(cropIronID);
+			cropGoldID = config.getBlock("crop", "Gold Crop ID", 2801).getInt(cropGoldID);
+			cropClayID = config.getBlock("crop", "Clay Crop ID", 2802).getInt(cropClayID);
 			
-			cropRedstoneID = config.getBlock("block", "Redstone Crop ID", 2803).getInt(cropRedstoneID);
-			cropCoalID = config.getBlock("block", "Coal Crop ID", 2804).getInt(cropCoalID);
+			cropRedstoneID = config.getBlock("crop", "Redstone Crop ID", 2803).getInt(cropRedstoneID);
+			cropCoalID = config.getBlock("crop", "Coal Crop ID", 2804).getInt(cropCoalID);
 			
-			cropNetherrackID = config.getBlock("block", "Netherrack Crop ID", 2805).getInt(cropNetherrackID);
-			cropGlowstoneID = config.getBlock("block", "Glowstone Crop ID", 2806).getInt(cropGlowstoneID);
-			cropQuartzID = config.getBlock("block", "Quartz Crop ID", 2807).getInt(cropQuartzID);
-			cropSoulsandID = config.getBlock("block", "Soulsand Crop ID", 2808).getInt(cropSoulsandID);
+			cropNetherrackID = config.getBlock("crop", "Netherrack Crop ID", 2805).getInt(cropNetherrackID);
+			cropGlowstoneID = config.getBlock("crop", "Glowstone Crop ID", 2806).getInt(cropGlowstoneID);
+			cropQuartzID = config.getBlock("crop", "Quartz Crop ID", 2807).getInt(cropQuartzID);
+			cropSoulsandID = config.getBlock("crop", "Soulsand Crop ID", 2808).getInt(cropSoulsandID);
 			
-			cropPearlID = config.getBlock("block", "Ender Pearl Crop ID", 2809).getInt(cropPearlID);
-			cropEndstoneID = config.getBlock("block", "Endstone Crop ID", 2810).getInt(cropEndstoneID);
+			cropPearlID = config.getBlock("crop", "Ender Pearl Crop ID", 2809).getInt(cropPearlID);
+			cropEndstoneID = config.getBlock("crop", "Endstone Crop ID", 2810).getInt(cropEndstoneID);
 			
-			cropTinID = config.getBlock("block", "Tin Crop ID", 2811).getInt(cropTinID);
-			cropCopperID = config.getBlock("block", "Copper Crop ID", 2812).getInt(cropCopperID);
-			cropSilverID = config.getBlock("block", "Silver Crop ID", 2813).getInt(cropSilverID);
-			cropLeadID = config.getBlock("block", "Lead Crop ID", 2814).getInt(cropLeadID);
-			cropNickelID = config.getBlock("block", "Nickel Crop ID", 2816).getInt(cropNickelID);
+			cropTinID = config.getBlock("crop", "Tin Crop ID", 2811).getInt(cropTinID);
+			cropCopperID = config.getBlock("crop", "Copper Crop ID", 2812).getInt(cropCopperID);
+			cropSilverID = config.getBlock("crop", "Silver Crop ID", 2813).getInt(cropSilverID);
+			cropLeadID = config.getBlock("crop", "Lead Crop ID", 2814).getInt(cropLeadID);
+			cropNickelID = config.getBlock("crop", "Nickel Crop ID", 2816).getInt(cropNickelID);
 			
-			cropLavaCrystalID = config.getBlock("block", "Lava Crystal Crop ID", 2815).getInt(cropLavaCrystalID);
-			
-			cropLapisID = config.getBlock("block", "Lapis Lazuli Crop ID", 2817).getInt(cropLavaCrystalID);
+			cropLavaCrystalID = config.getBlock("crop", "Lava Crystal Crop ID", 2815).getInt(cropLavaCrystalID);
 			
 			/* Seeds */
-			seedIronID = config.getItem("item", "Iron Seed ID", 5300).getInt(seedIronID);
-			seedGoldID = config.getItem("item", "Gold Seed ID", 5301).getInt(seedGoldID);
-			seedClayID = config.getItem("item", "Clay Seed ID", 5302).getInt(seedClayID);
+			seedIronID = config.getItem("seed", "Iron Seed ID", 5300).getInt(seedIronID);
+			seedGoldID = config.getItem("seed", "Gold Seed ID", 5301).getInt(seedGoldID);
+			seedClayID = config.getItem("seed", "Clay Seed ID", 5302).getInt(seedClayID);
 			
-			seedRedstoneID = config.getItem("item", "Redstone Seed ID", 5303).getInt(seedRedstoneID);
-			seedCoalID = config.getItem("item", "Coal Seed ID", 5304).getInt(seedCoalID);
+			seedRedstoneID = config.getItem("seed", "Redstone Seed ID", 5303).getInt(seedRedstoneID);
+			seedCoalID = config.getItem("seed", "Coal Seed ID", 5304).getInt(seedCoalID);
 			
-			seedNetherrackID = config.getItem("item", "Netherrack Seed ID", 5305).getInt(seedNetherrackID);
-			seedGlowstoneID = config.getItem("item", "Glowstone Seed ID", 5306).getInt(seedGlowstoneID);
-			seedQuartzID = config.getItem("item", "Quartz Seed ID", 5307).getInt(seedQuartzID);
-			seedSoulsandID = config.getItem("item", "Soulsand Seed ID", 5308).getInt(seedSoulsandID);
+			seedNetherrackID = config.getItem("seed", "Netherrack Seed ID", 5305).getInt(seedNetherrackID);
+			seedGlowstoneID = config.getItem("seed", "Glowstone Seed ID", 5306).getInt(seedGlowstoneID);
+			seedQuartzID = config.getItem("seed", "Quartz Seed ID", 5307).getInt(seedQuartzID);
+			seedSoulsandID = config.getItem("seed", "Soulsand Seed ID", 5308).getInt(seedSoulsandID);
 			
-			seedPearlID = config.getItem("item", "Ender Pearl Seed ID", 5309).getInt(seedPearlID);
-			seedEndstoneID = config.getItem("item", "Endstone Seed ID", 5310).getInt(seedEndstoneID);
+			seedPearlID = config.getItem("seed", "Ender Pearl Seed ID", 5309).getInt(seedPearlID);
+			seedEndstoneID = config.getItem("seed", "Endstone Seed ID", 5310).getInt(seedEndstoneID);
 			
-			seedTinID = config.getItem("item", "Tin Seed ID", 5311).getInt(seedTinID);
-			seedCopperID = config.getItem("item", "Copper Seed ID", 5312).getInt(seedCopperID);
+			seedTinID = config.getItem("seed", "Tin Seed ID", 5311).getInt(seedTinID);
+			seedCopperID = config.getItem("seed", "Copper Seed ID", 5312).getInt(seedCopperID);
 			
-			seedSilverID = config.getItem("item", "Silver Seed ID", 5313).getInt(seedSilverID);
-			seedLeadID = config.getItem("item", "Lead Seed ID", 5314).getInt(seedLeadID);
+			seedSilverID = config.getItem("seed", "Silver Seed ID", 5313).getInt(seedSilverID);
+			seedLeadID = config.getItem("seed", "Lead Seed ID", 5314).getInt(seedLeadID);
 			
-			seedNickelID = config.getItem("item", "Nickel Seed ID", 5318).getInt(seedNickelID);
+			seedNickelID = config.getItem("seed", "Nickel Seed ID", 5318).getInt(seedNickelID);
 			
-			seedLavaCrystalID = config.getItem("item", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
+			seedLavaCrystalID = config.getItem("seed", "Lava Crystal Seed ID", 5315).getInt(seedLavaCrystalID);
 			
-			seedLapisID = config.getItem("item", "Lapis Lazuli Seed ID", 5319).getInt(seedLapisID);
 			
 			/* Crafting Items */
 			magicalStemID = config.getItem("item", "Magical Stem ID", 5316).getInt(magicalStemID);
 			
 			/* Special Items */
 			magicBucketID = config.getItem("item", "Magic Infinite Bucket", 5317).getInt(magicBucketID);
-			
-			magicHelmetID = config.getItem("armor", "Magic Helmet", 5320).getInt(magicHelmetID);
-			
-			magicWingsID = config.getItem("armor", "Magic Chestplate", 5321).getInt(magicWingsID);
-			
-			magicLegginsID = config.getItem("armor", "Magic Leggings", 5322).getInt(magicLegginsID);
-			
-			magicBootsID = config.getItem("armor", "Magic Boots", 5323).getInt(magicBootsID);
 			
 			
 			
@@ -430,7 +424,7 @@ public class Configs {
 					Block.slowSand.blockID, new ItemStack(Item.lightStoneDust, 3), EnumCropType.NETHER)
 					.setType("Glow").setUnlocalizedName("seeds.glowstone");
 			seeds.add(seedGlowstone);
-			cropGlowstone = new PolyCrop(cropGlowstoneID, (ItemSeeds) seedGlowstone, 4).setFXType(FXType.GLOW);
+			cropGlowstone = new PolyCrop(cropGlowstoneID, (ItemSeeds) seedGlowstone, 4).setFXType(FXType.GLOW).setLightValue(1.2f);
 			crops.add(cropGlowstone);
 	
 			seedQuartz = new PolySeeds(seedQuartzID, cropQuartzID,
@@ -471,13 +465,6 @@ public class Configs {
 			magicBucket = new MagicBucket(magicBucketID, Block.waterMoving.blockID).setUnlocalizedName("magic.bucket")
 					.setContainerItem(Item.bucketEmpty).setCreativeTab(cTab);
 			
-			seedLapis = new PolySeeds(seedLapisID, cropLapisID,
-					Block.tilledField.blockID, new ItemStack(Item.dyePowder, 2, 4), EnumCropType.OVERWORLD)
-					.setType("Lapis").setUnlocalizedName("seeds.lapis");
-			seeds.add(seedLapis);
-			cropLapis = new PolyCrop(cropLapisID, (ItemSeeds) seedLapis, 3).setFXType(FXType.LAPIS);
-			crops.add(cropLapis);
-			
 			
 			// MAGIC CRAFTING RESOURCES
 			
@@ -487,53 +474,35 @@ public class Configs {
 			
 			for(Item seed : seeds)
 			{
-				GameRegistry.addRecipe(new ItemStack(seed),
-				"xxx",
-				"xyx",
-				"xxx",
-				Character.valueOf('x'), stem,
-				Character.valueOf('y'), new ItemStack(((PolySeeds)seed).getProduct().getItem()));
+				GameRegistry.addShapelessRecipe(new ItemStack(seed),
+				stem,
+				new ItemStack(((PolySeeds)seed).getProduct().getItem()));
 			}
 			
 			if(!tins.isEmpty())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedTin),
-				"xxx",
-				"xyx",
-				"xxx",
-			Character.valueOf('x'), stem,
-			Character.valueOf('y'), "ingotTin"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedTin),
+			stem,
+			"ingotTin"));
 			
 			if(!coppers.isEmpty())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedCopper),
-				"xxx",
-				"xyx",
-				"xxx",
-			Character.valueOf('x'), stem,
-			Character.valueOf('y'), "ingotCopper"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedCopper),
+			stem,
+			"ingotCopper"));
 			
 			if(!silvers.isEmpty())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedSilver),
-				"xxx",
-				"xyx",
-				"xxx",
-			Character.valueOf('x'), stem,
-			Character.valueOf('y'), "ingotSilver"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedSilver),
+			stem,
+			"ingotSilver"));
 			
 			if(!leads.isEmpty())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedLead),
-				"xxx",
-				"xyx",
-				"xxx",
-			Character.valueOf('x'), stem,
-			Character.valueOf('y'), "ingotLead"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedLead),
+			stem,
+			"ingotLead"));
 			
 			if(!nickels.isEmpty())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(seedNickel),
-				"xxx",
-				"xyx",
-				"xxx",
-			Character.valueOf('x'), stem,
-			Character.valueOf('y'), "ingotNickel"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedNickel),
+			stem,
+			"ingotNickel"));
 
 			
 			// LANGUAGE REGISTRY
@@ -600,9 +569,6 @@ public class Configs {
 			LanguageRegistry.addName(seedCoal, "Coal Seeds");
 			LanguageRegistry.addName(cropCoal, "Coal crop");
 			
-			LanguageRegistry.addName(seedLapis, "Lapis Seeds");
-			LanguageRegistry.addName(cropLapis, "Lapis crop");
-			
 			LanguageRegistry.addName(magicalStem, "Magical Stem");
 			
 			LanguageRegistry.addName(magicBucket, "Magical Bucket");
@@ -631,7 +597,6 @@ public class Configs {
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedSoulsand).getProduct(), new ItemStack(seedSoulsand));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedPearl).getProduct(), new ItemStack(seedPearl));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedLapis).getProduct(), new ItemStack(seedLapis));
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
@@ -640,7 +605,35 @@ public class Configs {
 			
 			// GRASS DROPS
 			
-			MinecraftForge.addGrassSeed(new ItemStack(magicalStem), 1); // Exceedingly rare. I think a wizard dropped it :3
+			// MinecraftForge.addGrassSeed(new ItemStack(magicalStem), 1); // Exceedingly rare. I think a wizard dropped it :3
+			
+			// DUNGEON DROPS
+			
+			ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_CORRIDOR, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_LIBRARY, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_CROSSING, new WeightedRandomChestContent(new ItemStack(magicalStem), 1, 3, 5));
+			
+			// MFR HOOKS
+			
+						if(Loader.isModLoaded("MineFactoryReloaded")) {
+							try {
+								LeadLogger.log(Level.INFO, "Loading MFR Support.");
+								
+								for(Block crop : crops) {
+									FarmingRegistry.registerHarvestable((IFactoryHarvestable)crop);
+									FarmingRegistry.registerFertilizable((IFactoryFertilizable)crop);
+									FarmingRegistry.registerPlantable(new PlantableCropPlant(((PolyCrop)crop).getSeedItem(), ((PolyCrop)crop).getCropItem()));
+								}
+								
+							} catch(Exception e) {
+								LeadLogger.log(Level.SEVERE, "Could not load MFR integration.");
+								e.printStackTrace(System.err);
+							}
+						}
 			
 		}
 		
@@ -668,6 +661,8 @@ public class Configs {
 					e.printStackTrace(System.err);
 				}
 			}
+			
+			
 			
 		}
 

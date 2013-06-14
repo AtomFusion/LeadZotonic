@@ -11,8 +11,8 @@ public final class Reference {
 	public static final String VERSION_NUMBER = "1.5.2a002";
 	public static final String CHANNEL_NAME = MOD_ID;
 	public static final String DEPENDENCIES = 
-			"after:ThermalExpansion;" /*+ 
-			"required-after:PowerCrystalsCore"*/;
+			"after:ThermalExpansion;" + 
+			"after:MineFactoryReloaded";
 	
 	/* Power conversions */
 	public static final int powerPerEU = 4;
