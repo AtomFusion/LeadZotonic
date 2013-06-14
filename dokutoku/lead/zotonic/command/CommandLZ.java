@@ -35,8 +35,8 @@ public class CommandLZ extends CommandBase {
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		
-		
-		if (args.length == 1) {
+		// Probably best to disable this
+		/* if (args.length == 1) {
 			
 			String cName = args[0];
 			LeadLogger.log(Level.INFO, cName);
@@ -177,7 +177,7 @@ public class CommandLZ extends CommandBase {
 			
 		} else {
 			throw new WrongUsageException(Commands.COMMAND_NR_USAGE, new Object[0]);
-		}
+		} */
 
 	}
 
