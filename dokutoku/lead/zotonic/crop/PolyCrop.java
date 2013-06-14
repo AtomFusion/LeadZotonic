@@ -311,10 +311,17 @@ public class PolyCrop extends BlockCrops implements IFactoryFertilizable, IFacto
     public void registerIcons(IconRegister par1IconRegister)
     {
         this.iconArray = new Icon[4];
-
+        
         for (int i = 0; i < this.iconArray.length - 1; ++i)
         {
-            this.iconArray[i] = par1IconRegister.registerIcon("carrots_" + i);
+	        if(((PolySeeds)seed).getPolyType() == EnumCropType.NETHER)
+	        	this.iconArray[i] = par1IconRegister.registerIcon(Reference.MOD_ID+":" +"nether_" + i);
+			else if(((PolySeeds)seed).getPolyType() == EnumCropType.OVERWORLD)
+				this.iconArray[i] = par1IconRegister.registerIcon("carrots_" + i);
+			else if(((PolySeeds)seed).getPolyType() == EnumCropType.LAVA)
+				this.iconArray[i] = par1IconRegister.registerIcon(Reference.MOD_ID+":" +"lava_" + i);
+			else if(((PolySeeds)seed).getPolyType() == EnumCropType.END)
+				this.iconArray[i] = par1IconRegister.registerIcon(Reference.MOD_ID+":" +"end_" + i);
         }
         
         this.iconArray[this.iconArray.length - 1] = par1IconRegister.registerIcon(Reference.MOD_ID+":" + fxtype.toString().toLowerCase() + "_crop");
