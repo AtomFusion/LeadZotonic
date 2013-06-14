@@ -482,27 +482,27 @@ public class Configs {
 			if(!tins.isEmpty())
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedTin),
 			stem,
-			"ingotTin"));
+			"oreTin"));
 			
 			if(!coppers.isEmpty())
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedCopper),
 			stem,
-			"ingotCopper"));
+			"oreCopper"));
 			
 			if(!silvers.isEmpty())
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedSilver),
 			stem,
-			"ingotSilver"));
+			"oreSilver"));
 			
 			if(!leads.isEmpty())
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedLead),
 			stem,
-			"ingotLead"));
+			"oreLead"));
 			
 			if(!nickels.isEmpty())
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(seedNickel),
 			stem,
-			"ingotNickel"));
+			"oreNickel"));
 
 			
 			// LANGUAGE REGISTRY
