@@ -190,18 +190,6 @@ public class Configs {
 		/* Magical Items */
 		public static Item magicBucket;
 		public static int  magicBucketID;
-		
-		public static Item magicHelmet;
-		public static int  magicHelmetID;
-		
-		public static Item magicWings;
-		public static int  magicWingsID;
-		
-		public static Item magicLeggings;
-		public static int  magicLegginsID;
-		
-		public static Item magicBoots;
-		public static int  magicBootsID;
 
 		/* Crop Collection */
 		public static ArrayList<Block> crops = new ArrayList<Block>();
@@ -294,45 +282,22 @@ public class Configs {
 			ArrayList<ItemStack> nickels = new ArrayList<ItemStack>();
 			
 			
+			tins    = OreDictionary.getOres("oreTin");
+			coppers = OreDictionary.getOres("oreCopper");
+			silvers = OreDictionary.getOres("oreSilver");
+			leads   = OreDictionary.getOres("oreLead");
+			nickels = OreDictionary.getOres("oreNickel");
 			
-			// Try to get TE's ingots first. Personal preference.
-			if(ItemRegistry.getItem("ingotElectrum", 1) != null)
-			{
-				
-				tin    = ItemRegistry.getItem("oreTin", 1);
-				copper = ItemRegistry.getItem("oreCopper", 1);
-				silver = ItemRegistry.getItem("oreSilver", 1);
-				lead   = ItemRegistry.getItem("oreLead", 1);
-				nickel = ItemRegistry.getItem("oreNickel", 1);
-				
-				// Satisfy checks
-				tins.add(tin);
-				coppers.add(copper);
-				silvers.add(silver);
-				leads.add(lead);
-				nickels.add(nickel);
-				
-				
-			} else {
-			
-				tins    = OreDictionary.getOres("oreTin");
-				coppers = OreDictionary.getOres("oreCopper");
-				silvers = OreDictionary.getOres("oreSilver");
-				leads   = OreDictionary.getOres("oreLead");
-				nickels = OreDictionary.getOres("oreNickel");
-				
-				if(!tins.isEmpty())
-					tin = tins.get(0);
-				if(!coppers.isEmpty())
-					copper = coppers.get(0);
-				if(!silvers.isEmpty())
-					silver = silvers.get(0);
-				if(!leads.isEmpty())
-					lead = leads.get(0);
-				if(!nickels.isEmpty())
-					nickel = nickels.get(0);
-			
-			}
+			if(!tins.isEmpty())
+				tin = tins.get(0);
+			if(!coppers.isEmpty())
+				copper = coppers.get(0);
+			if(!silvers.isEmpty())
+				silver = silvers.get(0);
+			if(!leads.isEmpty())
+				lead = leads.get(0);
+			if(!nickels.isEmpty())
+				nickel = nickels.get(0);
 			
 			/// METALS
 			

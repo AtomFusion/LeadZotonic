@@ -37,7 +37,7 @@ public class TabLeadZotonic extends CreativeTabs {
 	@SideOnly(Side.CLIENT)
 	public String getTabLabel()
 	{
-		return "Lead Zotonic Crops";
+		return "Golden Thumb Crops";
 	}
 	
 	@SideOnly(Side.CLIENT)
