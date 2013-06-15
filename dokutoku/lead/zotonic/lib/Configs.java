@@ -589,21 +589,13 @@ public class Configs {
 			// CRAFTING RECIPES
 			
 			for (Item seed : seeds) {
+				if(!(seed.equals(seedLavaCrystal)))
 				GameRegistry.addShapelessRecipe(((PolySeeds) seed).getProduct(), new ItemStack(seed));
 			}
 			
-			/* 
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedClay).getProduct(), new ItemStack(seedClay));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedCoal).getProduct(), new ItemStack(seedCoal));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedRedstone).getProduct(), new ItemStack(seedRedstone));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedNetherrack).getProduct(), new ItemStack(seedNetherrack));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedGlowstone).getProduct(), new ItemStack(seedGlowstone));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedQuartz).getProduct(), new ItemStack(seedQuartz));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedSoulsand).getProduct(), new ItemStack(seedSoulsand));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedPearl).getProduct(), new ItemStack(seedPearl));
-			GameRegistry.addShapelessRecipe(((PolySeeds) seedEndstone).getProduct(), new ItemStack(seedEndstone));
+			
 			GameRegistry.addShapelessRecipe(((PolySeeds) seedLavaCrystal).getProduct(), new ItemStack(seedLavaCrystal), new ItemStack(Item.bucketEmpty));
-			*/
+			
 			
 			GameRegistry.addShapelessRecipe(new ItemStack(magicBucket), new ItemStack(Item.bucketWater), new ItemStack(magicalStem));
 			
