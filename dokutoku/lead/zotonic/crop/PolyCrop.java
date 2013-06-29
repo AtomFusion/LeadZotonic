@@ -350,7 +350,7 @@ public class PolyCrop extends BlockCrops implements IFactoryFertilizable, IFacto
     }
 	
 	/** FX Effect Handlers **/
-	
+	@SideOnly(Side.CLIENT)
 	private void metalFXEffect(World par1World, float par2, float par3,
 			float par4, Random par5Random, float r, float g, float b) {
 		
@@ -364,6 +364,7 @@ public class PolyCrop extends BlockCrops implements IFactoryFertilizable, IFacto
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
 	private void rainFXEffect(World par1World, float f, float g, float h, Random par5Random)
 	{
 		
